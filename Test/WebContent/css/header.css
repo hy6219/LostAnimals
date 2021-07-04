@@ -1,0 +1,119 @@
+*{
+    padding:0;
+    margin:0;
+}
+body{
+    font-size:16px;
+}
+h1{
+    font-size:2rem;
+}
+header{
+    position:sticky;
+    top:0;
+}
+header nav.nav-bar ul.menu{
+    background-color: teal;
+    color:white;
+    font-size:20px;
+    font-weight:bold;
+    display:flex;
+    padding:2rem;
+}
+
+header nav.nav-bar ul.menu li{
+    margin-left:12rem;
+    list-style: none;
+}
+header nav.nav-bar ul.menu li:hover{
+    color:orange;
+}
+header nav.nav-bar div.hide{
+    display:none;
+}
+header nav.nav-bar div.drop{
+    display:flex;
+    align-content: center;
+    background-color: aliceblue;
+    border:2px solid;
+    border-radius:10px;
+}
+header nav.nav-bar div.drop ul.toggle{
+    margin-left:10rem;
+    line-height: 2;
+}
+header nav.nav-bar div.drop ul.toggle li{
+    list-style:none;
+    font-size:1rem;
+}
+
+section article.main{
+    display:flex;
+    justify-content: center;
+    align-content: center;
+    margin:3rem auto;
+}
+section article.main div.contents h1{
+	text-align:center;
+}
+section article.main iframe{
+    width: 60rem;
+    height:12rem;
+    margin-left:15%;
+    margin-top:20px;
+}
+
+section article.main div.contents .register{
+	display:flex;
+	justify-content:flex-end;
+}
+
+section article.main div.contents .register input[type=button]{
+	width : 10rem;
+	height: 2rem;
+	border-radius:1.5rem;
+	margin-right:.5rem;
+}
+
+section article.main div.contents .register input[type=button]:first-child{
+	background-color:orange;
+}
+
+section article.main div.contents .register input[type=button]:nth-child(2){
+	background-color:lightgreen;
+}
+
+section article.main div.contents-container{
+	display:flex;
+	justify-content:center;
+	align-content:center;
+	width:1200px;
+	margin:3rem auto;
+	flex-wrap:wrap;
+}
+
+
+section article.main div.contents-container div.item{
+	border:2px solid black;
+	border-radius:10px;
+	margin:2% 2%;
+	align-self:center;
+	width:320px;
+}
+section article.main div.contents-container div.item img{
+	width:200px;
+	height:200px;
+	margin-left:3rem;
+}
+
+section article.main div.contents div.pageBtn{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+
+section article.main div.contents div.pageBtn input[type=button]{
+	width:30px;
+	height:30px;
+	background-color:lightblue;
+}

@@ -64,8 +64,10 @@
     	  <input type="hidden" name="boardId" value="1">
     	  <input type="hidden" name="lev" value="${parent.lev }">
     	  <input type="hidden" name="tab" value="${parent.replyTab }"> 
+    	  <input type="hidden" name="tab" value="${parent.replyOrder }"> 
     	  <input type="hidden" name="seq" value="${parent.levSeq }">
-    	 <input type="hidden" name="depth" value="${parent.depth }">
+    	  <input type="hidden" name="depth" value="${parent.depth }">
+    	  <c:set var="ord" value="${parent.replyOrder}"/>
     	  <div class="article-container">
     		<div class="lostAnimalImg">
  				<img src="lostAnimal/${targetToShow.lostPic}">
@@ -124,7 +126,7 @@
     					<c:choose>
     						<c:when test="${not empty reply}">
     							<c:forEach var="rpList" items="${reply}" varStatus="status">
-    								 <c:if test="${rpList.lev ne 0}">
+    								 <c:if test="${rpList.replyOrder != ord}">
     						 			  <div class="reply-content-container">
     										<c:forEach begin="1" end="${rpList.replyTab}">
     											<span>&nbsp;</span>
@@ -134,7 +136,7 @@
     											<span>${rpList.content}</span>
     										</div>
     										<div class="specific-btns">
-    											<input type="button" value="댓글작성하기" title="댓글을 작성" class="register-rp-to-this" onclick="regReply(this); handlerCheck(${status.index});">
+    											<input type="button" value="댓글작성하기" title="댓글을 작성" class="register-rp-to-this" onclick="regReply(this);">
     											<input type="button" value="좋아요">
     											<input type="button" value="신고">
     										</div>

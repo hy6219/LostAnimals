@@ -3,6 +3,7 @@ package com.test.lostController;
 import com.test.lostController.action.Action;
 import com.test.lostController.action.LostAnimalAction;
 import com.test.lostController.action.LostMainAction;
+import com.test.lostController.action.ReReplyLostAnimalAction;
 import com.test.lostController.action.RegisterLostAction;
 import com.test.lostController.action.RegisterLostArticleAction;
 import com.test.lostController.action.RegisterReplyAction;
@@ -33,6 +34,8 @@ public class ActionFactory {
 			action = new LostAnimalAction();
 		}else if(cmd.equals("registerReply")) {
 			action = new RegisterReplyAction();
+		}else if(cmd.equals("reReplyLostAnimal")) {
+			action = new ReReplyLostAnimalAction();
 		}
 		
 		return action;

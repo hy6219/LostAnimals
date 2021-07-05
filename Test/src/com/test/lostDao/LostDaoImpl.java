@@ -14,8 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 import com.test.lostDto.LostDto;
 import com.test.replyDto.ReplyDto;
@@ -424,30 +424,34 @@ public class LostDaoImpl implements LostDao{
 	}
 
 	@Override
-	public int registerReplyToArticle(ReplyDto child) {
+	public int registerReplyToArticle(ReplyDto reParent,ReplyDto child) {
 		// TODO Auto-generated method stub
 		/*
-		INSERT INTO REPLY_ON_LOSTDETAIL VALUES(?,?,?,?,?,?,?,?,?,SYSDATE,0,0)
+		INSERT INTO REPLY_ON_LOSTDETAIL(BOARD_ID,REPLY_ORDER,NUM,LEV,LEV_SEQ,DEPTH,REPLYTAB,ID,CONTENT,
+		REGDATE,LIKENO,BAN) 
+		VALUES(?,?,?,?,?,?,?,?,?,SYSDATE,0,0)
 		 * 
 		 * */
 		int regRes = 0;
-		int maxOrd = selectMaxOrderOfBoard(child.getBoardId());
+		int maxOrd = selectMaxOrderOfBoard(reParent.getBoardId());
 		int maxSeq = 0;
 		String depth =child.getDepth();
 		int  dep = 0;
+		int  lev = getMaxLevelInReplyBoard(reParent.getBoardId(), reParent.getNum());
 		
 		System.out.println("max order: "+maxOrd);
 		//levSeq 최댓값 찾기
-		maxSeq  = selectMaxLevOrderOfBoard(child.getBoardId(), child.getNum(),child.getLev());
+	//	maxSeq  = selectMaxLevOrderOfBoard(child.getBoardId(), child.getNum(),child.getLev());
 		System.out.println("부모노드의 시퀀스: "+maxSeq);
 		
 		
 		if(depth==null) {
-			dep=0;
+			dep=1;
 			maxSeq =  0;
 		}else {
 			dep=Integer.valueOf(depth);
 		}
+		
 		
 		try {
 			
@@ -455,13 +459,13 @@ public class LostDaoImpl implements LostDao{
 			
 			ps   = conn.prepareStatement(insertReplyQuery);
 			
-			ps.setInt(1, child.getBoardId());
+			ps.setInt(1, reParent.getBoardId());
 			ps.setInt(2, maxOrd+1);
-			ps.setInt(3, child.getNum());
-			ps.setInt(4, child.getLev()+1);
-			ps.setInt(5, maxSeq+1);
-			ps.setInt(6, dep+1);
-			ps.setInt(7, child.getReplyTab()+1);
+			ps.setInt(3, reParent.getNum());
+			ps.setInt(4, lev+1);
+			ps.setInt(5, reParent.getLevSeq());
+			ps.setInt(6, dep);
+			ps.setInt(7, 1);//들여쓰기
 			ps.setString(8, child.getId());
 			ps.setString(9, child.getContent());
 			
@@ -600,10 +604,10 @@ public class LostDaoImpl implements LostDao{
 	}
 
 	@Override
-	public Set<Integer> getOrderedReplyReply(int boardId, int num) {
+	public Map<Integer, Integer> getOrderedReplyReply(int boardId, int num) {
 		// TODO Auto-generated method stub
 		//treeset은 sorted set으로 추가 정렬작업 필요없음
-		Set<Integer> processed = new TreeSet<>();
+		Map<Integer, Integer> processed = new TreeMap<>();
 		
 		try {
 			
@@ -616,7 +620,7 @@ public class LostDaoImpl implements LostDao{
 			rs = ps.executeQuery();
 			
 			while(rs.next()) {
-				processed.add(rs.getInt(1));
+				processed.put(rs.getInt(1),rs.getInt(2));
 			}
 			
 		}catch(Exception e) {
@@ -634,18 +638,74 @@ public class LostDaoImpl implements LostDao{
 	@Override
 	public int getReplyOrderValue(int boardId, int num, int order) {
 		// TODO Auto-generated method stub
-		Set<Integer> middle = getOrderedReplyReply(boardId, num);
+		/*
+		 * SELECT REPLY_ORDER FROM REPLY_ON_LOSTDETAIL WHERE  BOARD_ID=? AND NUM=? AND LEV=?
+		 * */
+		Map<Integer, Integer> middle = getOrderedReplyReply(boardId, num);
 		//리스트로 변환해서 GET으로 접근할것
-	    List<Integer> listed = new LinkedList<>(middle); 
-		int          result  = listed.get(order);
+	    List<Integer> listed = new LinkedList<>(middle.values());
+	    //결과를 담을 리스트
+	    List<Integer> tempList=new ArrayList<>();
+		int           level  = 0;
+		int  		  idx    = 0;
+		int  	     len     = listed.size();
+		int          export  = 0;
+		int          j       = 0;
+		boolean      flag    = false;
+		//버튼의 인덱스는 1부터 시작
+	
 		
-		return result;
+		for(int i = 1 ; i < len; i++) {
+			int item = listed.get(i);
+			if(order < item) {
+				level=i-1;
+				idx  =item-order;
+				flag =true;
+				break;
+			}
+		}
+		//루트노드인 경우
+		if(flag==false) {
+			level=0;
+			idx=getMaxLevelInReplyBoard(boardId,num);//부모노드가 루트노드인 경우는 여럿이므로
+		}
+		
+		
+		try {
+			
+			conn = getConnection();
+			
+			ps   = conn.prepareStatement(exportLevOrdQuery);
+			
+			ps.setInt(1, boardId);
+			ps.setInt(2, num);
+			ps.setInt(3, level);
+			
+			rs= ps.executeQuery();
+			
+			while(rs.next()) {
+				tempList.add(rs.getInt(1));
+			}
+			
+			export = tempList.get(idx-1);
+			
+		}catch(Exception e) {
+			System.out.println("[ERR]부모 노드 레벨 인식을 위한 과정 중 order 찾기 실패");
+			e.printStackTrace();
+		}finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+		System.out.println("level: "+level+", idx: "+idx+", export: "+export);
+		return export;
 	}
 
 	@Override
 	public ReplyDto getReparentReplyNode(int boardId, int num, int order) {
 		// TODO Auto-generated method stub
 		int trans = getReplyOrderValue(boardId, num, order);
+		System.out.println("res reply order: "+trans);
 		ReplyDto dto = new ReplyDto();
 		
 		try {
@@ -684,6 +744,100 @@ public class LostDaoImpl implements LostDao{
 		}
 		
 		return dto;
+	}
+
+	@Override
+	public int registerReReplyToArticle(ReplyDto reParent, ReplyDto child) {
+		// TODO Auto-generated method stub
+		int regRes = 0;
+		int maxOrd = selectMaxOrderOfBoard(reParent.getBoardId());
+		int maxSeq = 0;
+		String depth =child.getDepth();
+		int  dep = 0;
+		int  lev = reParent.getLev();
+		
+		System.out.println("max order: "+maxOrd);
+		//levSeq 최댓값 찾기
+	//	maxSeq  = selectMaxLevOrderOfBoard(child.getBoardId(), child.getNum(),child.getLev());
+		System.out.println("부모노드의 시퀀스: "+maxSeq);
+		
+		
+		if(depth==null) {
+			dep=1;
+			maxSeq =  0;
+		}else {
+			dep=Integer.valueOf(depth);
+		}
+		
+
+		try {
+			
+			conn = getConnection();
+			
+			ps   = conn.prepareStatement(insertReplyQuery);
+			
+			ps.setInt(1, reParent.getBoardId());
+			ps.setInt(2, maxOrd+1);
+			ps.setInt(3, reParent.getNum());
+			ps.setInt(4, lev);
+			ps.setInt(5, reParent.getLevSeq()+1);
+			ps.setInt(6, dep+1);
+			ps.setInt(7, reParent.getReplyTab()+1);
+			ps.setString(8, child.getId());
+			ps.setString(9, child.getContent());
+			
+			regRes = ps.executeUpdate();
+			
+			if(regRes >0) {
+				commit(conn);
+				System.out.println("댓글 작성 성공");
+			}else {
+				rollback(conn);
+				System.out.println("댓글 작성 실패");
+			}
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]댓글 작성 실패");
+		}finally {
+			close(ps);
+			close(conn);
+		}
+		
+		return regRes;
+	}
+
+	@Override
+	public int getMaxLevelInReplyBoard(int boardId, int num) {
+		// TODO Auto-generated method stub
+		int maxLev=0;
+		
+		try {
+			
+			conn = getConnection();
+			
+			ps   = conn.prepareStatement(selectMaxLevelQuery);
+			
+			ps.setInt(1, boardId);
+			ps.setInt(2, num);
+			
+			rs    = ps.executeQuery();
+			
+			if(rs.next()) {
+				maxLev = rs.getInt(1);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]최대 레벨 찾기 실패");
+		}finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+		
+		return maxLev;
 	}
 
 

@@ -44,13 +44,13 @@ public class RegisterReplyAction implements Action{
 		}
 		
 		
-		ReplyDto reParent= dao.getReparentReplyNode(boardId, parentNum, toFind);
+		ReplyDto parent= dao.selectSpecificReply(boardId, parentNum, 0, 1);
 		
 		
 		String id = request.getParameter("id");
 		String content= request.getParameter("reply");
 		
-		System.out.println("reParent: "+reParent);
+		System.out.println("parent: "+parent);
 		
 		//대댓글을 달려고 할때 처리
 //		if(id=="") {
@@ -60,23 +60,24 @@ public class RegisterReplyAction implements Action{
 //		if(content=="") {
 //			content=request.getParameter("clonedReply");
 //		}
-		
+		//레벨 먼저 조정
+		dao.updateLevelForReply(boardId, parentNum, parent.getLev(), parent.getReplyTab());
 		
 		ReplyDto target = new ReplyDto();
 		target.setBoardId(boardId);
-		target.setNum(parentNum);
-		target.setLev(reParent.getLev());
-		target.setLevSeq(reParent.getLevSeq());
-		target.setReplyTab(reParent.getReplyTab());
+//		target.setNum(parentNum);
+//		target.setLev(reParent.getLev());
+//		target.setLevSeq(0);
+//		target.setReplyTab(reParent.getReplyTab());
+//		target.setDepth(reParent.getDepth());
 		target.setId(id);
 		target.setContent(content);
 //		
 	//	System.out.println("now, target: "+target);
 		
-		int regRes = dao.registerReplyToArticle(target);
+		int regRes = dao.registerReplyToArticle(parent,target);
 		
-		//레벨 먼저 조정
-		dao.updateLevelForReply(boardId, parentNum, reParent.getLev(), reParent.getReplyTab());
+		
 		
 		String msg ="";
 		

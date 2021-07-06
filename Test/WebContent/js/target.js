@@ -16,6 +16,9 @@ var ord = document.getElementsByName("reparent-order")[0];
 var btn = document.querySelectorAll(".register-rp-to-this");
 var idx = 0;
 var mode = document.querySelector("#changeMode");
+var upBtn= document.querySelectorAll(".update-on-this");
+var delBtn =document.querySelectorAll(".delete-on-this"); 
+var id    = document.querySelector(".id");
 
 function regReply(e){
 	target.classList.toggle(focusing);
@@ -37,12 +40,51 @@ function handlerCheck(e){
 	for(var i = 0 ; i < btn.length; i++){
 		if(e===btn[i]){
 			ord.value=i;
+			//alert(`${ord.value}`);
+			console.log(`ord: ${ord.value}, i: ${i}`);
+			return;
+		}
+	}
+}
+
+function handleUpdate(e){
+	for(var i = 0 ; i < upBtn.length; i++){
+		if(e===upBtn[i]){
+			ord.value=i;
 			alert(`${ord.value}`);
 			console.log(`ord: ${ord.value}, i: ${i}`);
 			return;
 		}
 	}
 }
+
+function updateContent(e,writer,content){
+	mode.value="updateReplyOnRegLost";
+	alert("내용을 수정해주세요!");
+	id.value=writer;
+	id.readOnly=true;
+	id.style.backgroundColor="lightgray";
+	target.value=content;
+	target.focus();
+}
+
+function handleDelete(e){
+	for(var i = 0 ; i < delBtn.length; i++){
+		if(e===delBtn[i]){
+			ord.value=i;
+			alert(`${ord.value}`);
+			console.log(`ord: ${ord.value}, i: ${i}`);
+			return;
+		}
+	}
+}
+
+function deleteContent(e,boardId, num){
+	//mode.value="";
+	location.href=`lost.do?command=deleteReplyOnReg&boardId=${boardId}&num=${num}&ordIdx=${ord.value}`;
+}
+
+
 //	ord.value=val;
 	//console.log(val);
 

@@ -76,7 +76,7 @@
 						</c:when>
 						<c:otherwise>
 							<c:forEach var="list" items="${list}">
-									<div class="item" onclick="location.href='lost.do?command=lostAnimal&boardId=1&no=${list.num}&lev=0&seq=1&repPage=1';">
+									<div class="item" onclick="location.href='lost.do?command=lostAnimal&boardId=1&no=${list.num}&lev=0&seq=1';">
 										<img src="lostAnimal/${list.lostPic}" alt="${list.lostPic}"/>
 										<div class="title">제목: ${list.title}</div>
 										<div class="abbr">

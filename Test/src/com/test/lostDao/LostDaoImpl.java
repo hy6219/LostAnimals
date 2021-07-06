@@ -278,9 +278,9 @@ public class LostDaoImpl implements LostDao{
 	}
 
 	@Override
-	public int countAllReply(int num) {
+	public int countAllReply(int boardId, int num) {
 		// TODO Auto-generated method stub
-		//SELECT COUNT(REPLY_ORDER) FROM REPLY_ON_LOSTDETAIL WHERE NUM=? AND LEV > 0
+		//SELECT COUNT(REPLY_ORDER) FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? AND NUM=? AND LEV > 0
 		int cnt = 0;
 		
 		try {
@@ -288,11 +288,14 @@ public class LostDaoImpl implements LostDao{
 			conn = getConnection();
 			ps   = conn.prepareStatement(countReplyQuery);
 			
-			ps.setInt(1, num);
+			ps.setInt(1, boardId);
+			ps.setInt(2, num);
 			
 			rs   = ps.executeQuery();
 			
-			cnt  = rs.getInt(1);
+			if(rs.next()) {
+				cnt  = rs.getInt(1);
+			}
 			
 		}catch(Exception e) {
 			System.out.println("[ERR]COUNT ALL REPLY ON ARTICLE#"+num);
@@ -305,31 +308,21 @@ public class LostDaoImpl implements LostDao{
 		return cnt;
 	}
 
-	//댓글은 30개씩 끊어서 보여줄 것
-	@Override
-	public int totalReplyPage(int no) {
-		// TODO Auto-generated method stub
-		int replyCnt = countAllReply(no);
-		int page     = (int)(Math.ceil((double)replyCnt/30));
-		
-		return page;
-	}
 
 	@Override
-	public List<ReplyDto> selectAllReply(int boardId, int num,int page) {
+	public List<ReplyDto> selectAllReply(int boardId, int num) {
 		// TODO Auto-generated method stub
 		List<ReplyDto> list = new ArrayList<>();
 		/*
-		 SELECT * FROM (SELECT ROWNUM ORD, PROCESSED.* FROM (SELECT TARGET.* FROM 
-		 (SELECT DISTINCT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, 
-		 DEPTH,REPLYTAB, ID, CONTENT, REGDATE, LIKENO, BAN FROM REPLY_ON_LOSTDETAIL START WITH DEPTH IS NULL 
-		 CONNECT BY PRIOR LEV= DEPTH ORDER SIBLINGS BY LEV_SEQ) TARGET WHERE NUM=?) PROCESSED) 
-		 WHERE (ORD BETWEEN ? AND ?)
+		 SELECT TARGET.* FROM (SELECT BOARD_ID, REPLY_ORDER, NUM, LEV,LEV_SEQ, DEPTH,
+		 REPLYTAB, ID, CONTENT, REGDATE FROM REPLY_ON_LOSTDETAIL 
+		 START WITH DEPTH IS NULL CONNECT BY NOCYCLE 
+		 PRIOR REPLY_ORDER=NUM ORDER SIBLINGS BY LEV,LEV_SEQ) TARGET WHERE BOARD_ID=? AND NUM=?
 		 * */
-		//30개씩 끊어서 보여줄것
-		final int size = 30;
-		int startIdx=(page-1)*size+1;//1~30,31~60
-		int finIdx  = startIdx+29;
+		//댓글은 전체로 보여줄 것
+//		final int size = countAllReply(boardId, num);
+//		int startIdx=1;
+//		int finIdx  = size;
 		
 		try {
 			
@@ -338,26 +331,24 @@ public class LostDaoImpl implements LostDao{
 			
 			ps.setInt(1, boardId);
 			ps.setInt(2, num);
-			ps.setInt(3, startIdx);
-			ps.setInt(4, finIdx);
+//			ps.setInt(3, startIdx);
+//			ps.setInt(4, finIdx);
 
 			rs = ps.executeQuery();
 			
 			while(rs.next()) {
 				ReplyDto dto = new ReplyDto();
 
-				dto.setBoardId(rs.getInt(2));
-				dto.setReplyOrder(rs.getInt(3));
-				dto.setNum(rs.getInt(4));
-				dto.setLev(rs.getInt(5));
-				dto.setLevSeq(rs.getInt(6));
-				dto.setDepth(String.valueOf(rs.getInt(7)));
-				dto.setReplyTab(rs.getInt(8));
-				dto.setId(rs.getString(9));
-				dto.setContent(rs.getString(10));
-				dto.setRegDate(sf.format(rs.getDate(11)));
-				dto.setLikeNo(rs.getInt(12));
-				dto.setBan(rs.getInt(13));
+				dto.setBoardId(rs.getInt(1));
+				dto.setReplyOrder(rs.getInt(2));
+				dto.setNum(rs.getInt(3));
+				dto.setLev(rs.getInt(4));
+				dto.setLevSeq(rs.getInt(5));
+				dto.setDepth(String.valueOf(rs.getInt(6)));
+				dto.setReplyTab(rs.getInt(7));
+				dto.setId(rs.getString(8));
+				dto.setContent(rs.getString(9));
+				dto.setRegDate(sf.format(rs.getDate(10)));
 				
 				list.add(dto);
 			}
@@ -377,8 +368,8 @@ public class LostDaoImpl implements LostDao{
 	public ReplyDto selectSpecificReply(int boardId, int num, int lev, int levSeq) {
 		// TODO Auto-generated method stub
 		/*
-		SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, REPLYTAB, ID, CONTENT, REGDATE, LIKENO, 
-		BAN FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? AND NUM=? AND LEV=? AND LEV_SEQ=?
+		SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, REPLYTAB, ID, CONTENT, REGDATE
+		FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? AND NUM=? AND LEV=? AND LEV_SEQ=?
 		 * 
 		 * */
 		ReplyDto target = new ReplyDto();
@@ -407,8 +398,6 @@ public class LostDaoImpl implements LostDao{
 				target.setId(rs.getString(8));
 				target.setContent(rs.getString(9));
 				target.setRegDate(sf.format(rs.getDate(10)));
-				target.setLikeNo(rs.getInt(11));
-				target.setBan(rs.getInt(12));
 			}
 			
 		}catch(Exception e) {
@@ -428,12 +417,12 @@ public class LostDaoImpl implements LostDao{
 		// TODO Auto-generated method stub
 		/*
 		INSERT INTO REPLY_ON_LOSTDETAIL(BOARD_ID,REPLY_ORDER,NUM,LEV,LEV_SEQ,DEPTH,REPLYTAB,ID,CONTENT,
-		REGDATE,LIKENO,BAN) 
-		VALUES(?,?,?,?,?,?,?,?,?,SYSDATE,0,0)
+		REGDATE) 
+		VALUES(?,?,?,?,?,?,?,?,?,SYSDATE)
 		 * 
 		 * */
 		int regRes = 0;
-		int maxOrd = selectMaxOrderOfBoard(reParent.getBoardId());
+		int maxOrd = selectMaxOrderOfBoard();
 		int maxSeq = 0;
 		String depth =child.getDepth();
 		int  dep = 0;
@@ -492,12 +481,12 @@ public class LostDaoImpl implements LostDao{
 	}
 
 	@Override
-	public int selectMaxOrderOfBoard(int boardId) {
+	public int selectMaxOrderOfBoard() {
 		// TODO Auto-generated method stub
 		
 		/*
 		 * String  selectMaxOrderQuery = "SELECT MAX(REPLY_ORDER) FROM 
-		 * REPLY_ON_LOSTDETAIL WHERE BOARD_ID=?";
+		 * REPLY_ON_LOSTDETAIL
 		 * */
 		int max =0;
 		
@@ -506,7 +495,6 @@ public class LostDaoImpl implements LostDao{
 			conn = getConnection();
 			ps   = conn.prepareStatement(selectMaxOrderQuery);
 			
-			ps.setInt(1, boardId);
 			
 			rs = ps.executeQuery();
 			
@@ -561,47 +549,47 @@ public class LostDaoImpl implements LostDao{
 		return getMax;
 	}
 
-	@Override
-	public int updateLevelForReply(int boardId, int num, int lev, int replyTab) {
-		// TODO Auto-generated method stub
-		/*
-		 	String  updateLevQuery="UPDATE REPLY_ON_LOSTDETAIL SET LEV = 
-		 	(LEV + 1), LEV_SEQ=(LEV_SEQ+1) WHERE  BOARD_ID=? AND NUM=? AND LEV=? AND REPLYTAB>?";
-		 * */
-		int resLevUpdate = 0;
-		
-		try {
-			
-			conn = getConnection();
-			 
-			ps   = conn.prepareStatement(updateLevQuery);
-			
-			ps.setInt(1, boardId);
-			ps.setInt(2, num);
-			ps.setInt(3, lev);
-			ps.setInt(4, replyTab);
-		
-			
-			resLevUpdate = ps.executeUpdate();
-			
-			if(resLevUpdate > 0) {
-				System.out.println("레벨 조정 성공");
-				commit(conn);
-			}else {
-				System.out.println("레벨 조정 실패");
-				rollback(conn);
-			}
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-			System.out.println("[ERR]댓글형 게시판 레벨 조정실패");
-		}finally {
-			close(ps);
-			close(conn);
-		}
-		
-		return resLevUpdate;
-	}
+//	@Override
+//	public int updateLevelForReply(int boardId, int num, int lev, int replyTab) {
+//		// TODO Auto-generated method stub
+//		/*
+//		 	String  updateLevQuery="UPDATE REPLY_ON_LOSTDETAIL SET LEV = 
+//		 	(LEV + 1), LEV_SEQ=(LEV_SEQ+1) WHERE  BOARD_ID=? AND NUM=? AND LEV=? AND REPLYTAB>?";
+//		 * */
+//		int resLevUpdate = 0;
+//		
+//		try {
+//			
+//			conn = getConnection();
+//			 
+//			ps   = conn.prepareStatement(updateLevQuery);
+//			
+//			ps.setInt(1, boardId);
+//			ps.setInt(2, num);
+//			ps.setInt(3, lev);
+//			ps.setInt(4, replyTab);
+//		
+//			
+//			resLevUpdate = ps.executeUpdate();
+//			
+//			if(resLevUpdate > 0) {
+//				System.out.println("레벨 조정 성공");
+//				commit(conn);
+//			}else {
+//				System.out.println("레벨 조정 실패");
+//				rollback(conn);
+//			}
+//			
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//			System.out.println("[ERR]댓글형 게시판 레벨 조정실패");
+//		}finally {
+//			close(ps);
+//			close(conn);
+//		}
+//		
+//		return resLevUpdate;
+//	}
 
 	@Override
 	public Map<Integer, Integer> getOrderedReplyReply(int boardId, int num) {
@@ -714,7 +702,7 @@ public class LostDaoImpl implements LostDao{
 		/*
 		 * String  selectParentReplyQuery= "SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, 
 		 * REPLYTAB,
-		 *  ID, CONTENT, REGDATE, LIKENO, BAN FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? 
+		 *  ID, CONTENT, REGDATE FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? 
 		 * AND NUM=? AND REPLY_ORDER=?
 		 * 
 		 * */
@@ -740,8 +728,7 @@ public class LostDaoImpl implements LostDao{
 				dto.setId(rs.getString(8));
 				dto.setContent(rs.getString(9));
 				dto.setRegDate(sf.format(rs.getDate(10)));
-				dto.setLikeNo(rs.getInt(11));
-				dto.setBan(rs.getInt(12));
+
 			}
 			
 		}catch(Exception e) {
@@ -760,7 +747,7 @@ public class LostDaoImpl implements LostDao{
 	public int registerReReplyToArticle(ReplyDto reParent, ReplyDto child) {
 		// TODO Auto-generated method stub
 		int regRes = 0;
-		int maxOrd = selectMaxOrderOfBoard(reParent.getBoardId());
+		int maxOrd = selectMaxOrderOfBoard();
 		int maxSeq = selectMaxLevOrderOfBoard(reParent.getBoardId(), reParent.getNum(),reParent.getLev());
 		String depth =child.getDepth();
 		int  dep = 0;
@@ -847,6 +834,121 @@ public class LostDaoImpl implements LostDao{
 		}
 		
 		return maxLev;
+	}
+
+	//댓글 수정
+	@Override
+	public int updateReply(ReplyDto dto) {
+		// TODO Auto-generated method stub
+		/*
+		 * UPDATE REPLY_ON_LOSTDETAIL SET CONTENT=? WHERE REPLY_ORDER=? AND ID=?
+		 * */
+		int upRes = 0;
+		
+		try {
+			
+			conn = getConnection();
+			ps   = conn.prepareStatement(updateReplyQuery);
+			
+			ps.setString(1, dto.getContent());
+			ps.setInt(2, dto.getReplyOrder());
+			ps.setString(3, dto.getId());
+			
+			upRes = ps.executeUpdate();
+			
+			if(upRes>0) {
+				System.out.println("댓글 수정 성공");
+				commit(conn);
+			}else {
+				System.out.println("댓글 수정 실패");
+				rollback(conn);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]댓글 수정 실패");
+		}finally {
+			close(ps);
+			close(conn);
+		}
+		
+		return upRes;
+	}
+
+	//댓글 삭제
+	@Override
+	public int deleteReply(ReplyDto dto) {
+		// TODO Auto-generated method stub
+		/*
+		 *DELETE FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? AND NUM=? AND REPLY_ORDER=? 
+		 */
+		int delRes = 0;
+		
+		try {
+			
+			conn = getConnection();
+			
+			ps   = conn.prepareStatement(deleteReplyQuery);
+			
+			ps.setInt(1, dto.getBoardId());
+			ps.setInt(2, dto.getNum());
+			ps.setInt(3, dto.getReplyOrder());
+			
+			delRes = ps.executeUpdate();
+			
+			if(delRes > 0) {
+				System.out.println("댓글 삭제 성공");
+				commit(conn);
+			}else {
+				System.out.println("댓글 삭제 실패");
+				rollback(conn);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]댓글 삭제");
+		}finally {
+			close(ps);
+			close(conn);
+		}
+		
+		return delRes;
+	}
+
+	@Override
+	public ReplyDto selectReply(int replyOrder) {
+		// TODO Auto-generated method stub
+		ReplyDto dto = new ReplyDto();
+		
+		try {
+			
+			conn = getConnection();
+			ps   = conn.prepareStatement(selectReplyOneQuery);
+			
+			rs   = ps.executeQuery();
+			
+			if(rs.next()) {
+				dto.setReplyOrder(rs.getInt(1));
+				dto.setNum(rs.getInt(2));
+				dto.setLev(rs.getInt(3));
+				dto.setLevSeq(rs.getInt(4));
+				dto.setDepth(String.valueOf(rs.getInt(5)));
+				dto.setReplyTab(rs.getInt(6));
+				dto.setId(rs.getString(7));
+				dto.setContent(rs.getString(8));
+				dto.setRegDate(sf.format(rs.getDate(9)));
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]특정 댓글 하나만 order로 선택");
+		}finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+		
+		return dto;
 	}
 
 

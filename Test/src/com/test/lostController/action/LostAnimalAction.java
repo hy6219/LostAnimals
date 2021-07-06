@@ -28,11 +28,11 @@ public class LostAnimalAction implements Action{
 		int lev     = Integer.valueOf(request.getParameter("lev"));
 		int levSeq     = Integer.valueOf(request.getParameter("seq"));
 		//댓글 찾아오기
-		int page = Integer.valueOf(request.getParameter("repPage"));
+		//int page = Integer.valueOf(request.getParameter("repPage"));
 		
 		ReplyDto  parent = dao.selectSpecificReply(boardId, no, lev, levSeq);
 		
-		List<ReplyDto>  targetRp = dao.selectAllReply(boardId, no,page);
+		List<ReplyDto>  targetRp = dao.selectAllReply(boardId, no);
 		
 		System.out.println("target: "+target);
 		System.out.println("rpList: "+targetRp);

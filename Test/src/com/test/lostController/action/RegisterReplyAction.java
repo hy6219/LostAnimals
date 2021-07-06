@@ -16,16 +16,6 @@ public class RegisterReplyAction implements Action{
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-//		int parentSeq = Integer.valueOf(request.getParameter("seq"));
-//		int parentTab = Integer.valueOf(request.getParameter("tab"));
-//		int parentLev = Integer.valueOf(request.getParameter("lev"));
-//		String parentDepth = request.getParameter("depth");
-		
-		//int order = Integer.valueOf(request.getParameter("order"));
-		
-		//ReplyDto reParent = dao.selectSpecificReply(boardId, parentNum, parentLev, parentSeq);
-//		System.out.println("reParent: "+reParent);
-		
 		//먼저 레벨 업데이트
 		LostDaoImpl dao = LostDaoImpl.getInstance();
 		
@@ -61,15 +51,10 @@ public class RegisterReplyAction implements Action{
 //			content=request.getParameter("clonedReply");
 //		}
 		//레벨 먼저 조정
-		dao.updateLevelForReply(boardId, parentNum, parent.getLev(), parent.getReplyTab());
+	//	dao.updateLevelForReply(boardId, parentNum, parent.getLev(), parent.getReplyTab());
 		
 		ReplyDto target = new ReplyDto();
 		target.setBoardId(boardId);
-//		target.setNum(parentNum);
-//		target.setLev(reParent.getLev());
-//		target.setLevSeq(0);
-//		target.setReplyTab(reParent.getReplyTab());
-//		target.setDepth(reParent.getDepth());
 		target.setId(id);
 		target.setContent(content);
 //		

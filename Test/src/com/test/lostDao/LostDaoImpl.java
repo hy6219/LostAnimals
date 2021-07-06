@@ -652,14 +652,17 @@ public class LostDaoImpl implements LostDao{
 		int          export  = 0;
 		int          j       = 0;
 		boolean      flag    = false;
-		//버튼의 인덱스는 1부터 시작
-	
+		int 	     t       = order+1;//부모노드를 제외하고 시작하되, button을 1로 간주
+		System.out.println(listed.toString());
 		
-		for(int i = 1 ; i < len; i++) {
-			int item = listed.get(i);
-			if(order < item) {
-				level=i-1;
-				idx  =item-order;
+		for(int i = 0 ; i < len-1; i++) {
+			int item1 = listed.get(i)-1;
+			int item2 = listed.get(i+1)-1;
+			System.out.println("item1: "+item1+",item2:"+item2);
+			System.out.println("order: "+order+", t: "+t);
+			if(t> item1 &&t <= item2) {
+				level=i+1;
+				idx  =(int)(Math.abs(item1-t));
 				flag =true;
 				break;
 			}
@@ -698,6 +701,7 @@ public class LostDaoImpl implements LostDao{
 			close(conn);
 		}
 		System.out.println("level: "+level+", idx: "+idx+", export: "+export);
+
 		return export;
 	}
 
@@ -707,7 +711,13 @@ public class LostDaoImpl implements LostDao{
 		int trans = getReplyOrderValue(boardId, num, order);
 		System.out.println("res reply order: "+trans);
 		ReplyDto dto = new ReplyDto();
-		
+		/*
+		 * String  selectParentReplyQuery= "SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, 
+		 * REPLYTAB,
+		 *  ID, CONTENT, REGDATE, LIKENO, BAN FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? 
+		 * AND NUM=? AND REPLY_ORDER=?
+		 * 
+		 * */
 		try {
 			
 			conn = getConnection();
@@ -751,7 +761,7 @@ public class LostDaoImpl implements LostDao{
 		// TODO Auto-generated method stub
 		int regRes = 0;
 		int maxOrd = selectMaxOrderOfBoard(reParent.getBoardId());
-		int maxSeq = 0;
+		int maxSeq = selectMaxLevOrderOfBoard(reParent.getBoardId(), reParent.getNum(),reParent.getLev());
 		String depth =child.getDepth();
 		int  dep = 0;
 		int  lev = reParent.getLev();
@@ -764,7 +774,6 @@ public class LostDaoImpl implements LostDao{
 		
 		if(depth==null) {
 			dep=1;
-			maxSeq =  0;
 		}else {
 			dep=Integer.valueOf(depth);
 		}
@@ -780,7 +789,7 @@ public class LostDaoImpl implements LostDao{
 			ps.setInt(2, maxOrd+1);
 			ps.setInt(3, reParent.getNum());
 			ps.setInt(4, lev);
-			ps.setInt(5, reParent.getLevSeq()+1);
+			ps.setInt(5, maxSeq+1);
 			ps.setInt(6, dep+1);
 			ps.setInt(7, reParent.getReplyTab()+1);
 			ps.setString(8, child.getId());

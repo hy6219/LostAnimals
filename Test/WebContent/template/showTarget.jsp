@@ -136,9 +136,8 @@
     											<span>${rpList.content}</span>
     										</div>
     										<div class="specific-btns">
-    											<input type="button" value="댓글작성하기" title="댓글을 작성" class="register-rp-to-this" onclick="regReply(this);">
-    											<input type="button" value="좋아요">
-    											<input type="button" value="신고">
+    											<input type="button" value="댓글작성하기" title="댓글을 작성" class="register-rp-to-this" onclick="regReply(this);handlerCheck(this);">
+    											<input type="button" value="수정" onclick="handlerCheck(this);">
     										</div>
     							  		</div>
     							  	</c:if>		

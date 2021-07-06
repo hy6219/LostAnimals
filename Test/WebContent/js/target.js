@@ -32,17 +32,19 @@ function cancelCk(){
 	target.style.boxShadow="none";
 }
 
-function handlerCheck(){
+function handlerCheck(e){
+	console.log(btn.length);
 	for(var i = 0 ; i < btn.length; i++){
-		btn[i].addEventListener("click",function(){
+		if(e===btn[i]){
 			ord.value=i;
-			console.log("ord: "+ord.value);
-		});
+			alert(`${ord.value}`);
+			console.log(`ord: ${ord.value}, i: ${i}`);
+			return;
+		}
 	}
+}
 //	ord.value=val;
 	//console.log(val);
-}
 
 //regRpToThis.addEventListener("click",regReply);
 target.addEventListener("click",cancelCk);
-handlerCheck();

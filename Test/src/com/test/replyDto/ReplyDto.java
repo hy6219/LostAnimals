@@ -17,8 +17,6 @@ public class ReplyDto {
 	private String 	id;
 	private String  content;
 	private String  regDate;
-	private int     likeNo;
-	private int     ban;
 	
 	public ReplyDto() {
 		super();
@@ -26,7 +24,7 @@ public class ReplyDto {
 	}
 
 	public ReplyDto(int boardId, int replyOrder, int num, int lev, int levSeq, String depth, int replyTab, String id, String content,
-			String regDate, int likeNo, int ban) {
+			String regDate) {
 		super();
 		this.boardId = boardId;
 		this.replyOrder = replyOrder;
@@ -38,8 +36,6 @@ public class ReplyDto {
 		this.id = id;
 		this.content = content;
 		this.regDate = regDate;
-		this.likeNo = likeNo;
-		this.ban = ban;
 	}
 
 	public int getBoardId() {
@@ -122,27 +118,13 @@ public class ReplyDto {
 		this.regDate = regDate;
 	}
 
-	public int getLikeNo() {
-		return likeNo;
-	}
-
-	public void setLikeNo(int likeNo) {
-		this.likeNo = likeNo;
-	}
-
-	public int getBan() {
-		return ban;
-	}
-
-	public void setBan(int ban) {
-		this.ban = ban;
-	}
+	
 
 	@Override
 	public String toString() {
 		return "ReplyDto [boardId=" + boardId + ", replyOrder=" + replyOrder + ", num=" + num + ", lev=" + lev
 				+ ", levSeq=" + levSeq + ", depth=" + depth + ", replyTab=" + replyTab + ", id=" + id + ", content="
-				+ content + ", regDate=" + regDate + ", likeNo=" + likeNo + ", ban=" + ban + "]";
+				+ content + ", regDate=" + regDate + "]";
 	}
 
 	

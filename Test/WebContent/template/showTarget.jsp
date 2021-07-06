@@ -125,19 +125,20 @@
     					 <input type="hidden" name="reparent-order" value="">
     					<c:choose>
     						<c:when test="${not empty reply}">
-    							<c:forEach var="rpList" items="${reply}" varStatus="status">
+    							<c:forEach var="rpList" items="${reply}">
     								 <c:if test="${rpList.replyOrder != ord}">
     						 			  <div class="reply-content-container">
     										<c:forEach begin="1" end="${rpList.replyTab}">
     											<span>&nbsp;</span>
     										</c:forEach>
-    										<span>댓글 작성자: ${rpList.id}</span>
+    										<span class="reply-writer">↪댓글 작성자: ${rpList.id}</span>
     										<div class="rpContent">
     											<span>${rpList.content}</span>
     										</div>
     										<div class="specific-btns">
     											<input type="button" value="댓글작성하기" title="댓글을 작성" class="register-rp-to-this" onclick="regReply(this);handlerCheck(this);">
-    											<input type="button" value="수정" onclick="handlerCheck(this);">
+    											<input type="button" value="수정" class="update-on-this" onclick="handleUpdate(this); updateContent(this,'${rpList.id}','${rpList.content}');">
+    											<input type="button" value="삭제" class="delete-on-this" onclick="handleDelete(this); deleteContent(this,${parent.boardId},${parent.num});">
     										</div>
     							  		</div>
     							  	</c:if>		

@@ -12,7 +12,7 @@
 </head>
 <body>
     <div>
-        ${user.userId}님,<br>
+        ${user.myId}님,<br>
     실종신고는 <a href="../lostMain.jsp">실종 신고 게시판</a><br>
     실종되었던 아이를 찾은 후기는 <a href="">실종되었던 아이 찾은 후기</a><br>
     에서 확인해볼 수 있습니다! 혹시라도 실종신고게시판에서 보셨던 아이를 발견하시면<br>

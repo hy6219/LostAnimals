@@ -17,6 +17,11 @@
 <body>
 <header>
         <nav class="nav-bar">
+           	<ul class="login">
+        		<li><input type="button" value="로그인" onclick="location.href='login.do?command=logIn';" id="loginHide"></li>
+        		<li><input type="button" value="로그아웃" onclick="location.href='login.do?command=logOut';" id="loginShow"></li>
+        		<li><span id="loginUser">${user.myId}</span></li>
+        	</ul>
             <ul class="menu">
                 <li>목격/보호</li>
                 <li>실종/신고</li>
@@ -151,5 +156,6 @@
     </section>
     <script src="./js/header.js"></script>
     <script src="./js/registerLost.js"></script>
+    <script src="./js/login.js"></script>
 </body>
 </html>

@@ -11,7 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>찾아봐주개냥</title>
-    <link rel="stylesheet" href="./css/headerReg.css?version=210624">
+    <link rel="stylesheet" href="<%=request.getContextPath() %>/css/headerReg.css">
     <link rel="shortcut icon" href="lostAnimal/favicon.ico" type="image/x-icon">
 </head>
 <body>
@@ -64,7 +64,7 @@
             <div class="contents">
                 <h1>실종 신고 정보 등록하기</h1>
             </div>
-       <form action="lost.do?command=registerLostArticle" enctype="multipart/form-data" method="post" name="frm">
+       <form action="<%=request.getContextPath() %>/lost.do?command=registerLostArticle" enctype="multipart/form-data" method="post" name="frm">
             <table border="1">
 				<tbody>
 					<tr>
@@ -73,7 +73,7 @@
 					</tr>
 					<tr>
 						<th>작성자</th>
-						<td><input type="text" name="writer" placeholder="공백 포함 최대 25자" required></td>
+						<td><input type="text" name="writer" value="${user.myId}" readonly></td>
 					</tr>
 					<tr>
 						<th>연락처</th>
@@ -154,8 +154,8 @@
             </form>
         </article>
     </section>
-    <script src="./js/header.js"></script>
-    <script src="./js/registerLost.js"></script>
-    <script src="./js/login.js"></script>
+    <script src="<%=request.getContextPath() %>/js/header.js"></script>
+    <script src="<%=request.getContextPath() %>/js/registerLost.js"></script>
+    <script src="<%=request.getContextPath() %>/js/login.js"></script>
 </body>
 </html>

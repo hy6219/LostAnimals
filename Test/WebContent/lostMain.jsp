@@ -2,6 +2,8 @@
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt"  prefix="fmt"%>
+<%@ page import="java.util.Date" %>
+<%@ page import="java.text.SimpleDateFormat" %>
 <%  request.setCharacterEncoding("UTF-8");%>
 <%  response.setContentType("text/html;charset=UTF-8");%>
 <!DOCTYPE html>
@@ -71,7 +73,7 @@
                 </div>
                 <div class="register">
                 <!-- 글 등록 & 확인하기 -->
-                	<input type="button" value="나의 아이 등록하기" onclick="location.href='lost.do?command=registerLost';">
+                	<input type="button" value="나의 아이 등록하기" onclick="location.href='<%=request.getContextPath() %>/lost.do?command=registerLost';">
                 	<input type="button" value="내가 등록한 글">
                 </div>
                 <div class="contents-container">
@@ -81,12 +83,13 @@
 						</c:when>
 						<c:otherwise>
 							<c:forEach var="list" items="${list}">
-									<div class="item" onclick="location.href='lost.do?command=lostAnimal&boardId=1&no=${list.num}&lev=0&seq=1';">
+									<div class="item" onclick="location.href='<%=request.getContextPath() %>/lost.do?command=lostAnimal&boardId=1&no=${list.num}&lev=0&seq=1';">
 										<img src="lostAnimal/${list.lostPic}" alt="${list.lostPic}"/>
 										<div class="title">제목: ${list.title}</div>
 										<div class="abbr">
 											<p>종류 : ${list.species}&nbsp;&nbsp;${list.cate}</p>
-											<p>잃어버린 날짜 : ${list.lostDate}</p>
+											<fmt:parseDate var="lostDate" type="date" value="${list.lostDate}" pattern="yyyy-MM-dd"/>
+											<p>잃어버린 날짜 : <fmt:formatDate value="${lostDate}" pattern="yyyy년 MM월 dd일 "/></p>
 											<p>잃어버린 장소 : ${list.lostPlace}</p>
 										</div>
 									</div>
@@ -101,7 +104,7 @@
                 	<c:choose>
                 		<c:when test="${pageNum !=0}">
                 			<c:forEach var="page" begin="1" end="${pageNum}">
-                				<input type="button" value="${page}" onclick="location.href='lost.do?command=lostMain&page=${page}';">
+                				<input type="button" value="${page}" onclick="location.href='<%=request.getContextPath() %>/lost.do?command=lostMain&page=${page}';">
                 			</c:forEach>
                 		</c:when>
                		</c:choose>

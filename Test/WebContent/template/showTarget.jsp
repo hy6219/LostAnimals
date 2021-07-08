@@ -12,8 +12,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>찾아봐주개냥</title>
     <link rel="shortcut icon" href="lostAnimal/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="./css/headerCommon.css">
-    <link rel="stylesheet" href="./css/target.css">
+    <link rel="stylesheet" href="<%=request.getContextPath() %>/css/headerCommon.css">
+    <link rel="stylesheet" href="<%=request.getContextPath() %>/css/target.css">
 </head>
 <body>
     <header>
@@ -63,7 +63,7 @@
     <section>
     	<article class="main">
     	<!-- 등록한 사진 보여주기 -->
-    	  <form action="lost.do" method="post">
+    	  <form action="<%=request.getContextPath() %>/lost.do" method="post">
     	  <input type="hidden" name="command" value="registerReply" id="changeMode">
     	  <input type="hidden" name="num" value="${targetToShow.num}">
     	  <input type="hidden" name="boardId" value="1">
@@ -72,6 +72,7 @@
     	  <input type="hidden" name="tab" value="${parent.replyOrder }"> 
     	  <input type="hidden" name="seq" value="${parent.levSeq }">
     	  <input type="hidden" name="depth" value="${parent.depth }">
+    	  <input type="hidden" name="article" value="${targetToShow}"/>
     	  <c:set var="ord" value="${parent.replyOrder}"/>
     	  <div class="article-container">
     		<div class="lostAnimalImg">
@@ -117,14 +118,18 @@
     				</tr>
     			</table>
     			</div>
-    			
+    			<!-- 수정/삭제 -->
+    			<div class="mod-container">
+    				<input type="button" value="글 수정하기" class="article-update" onclick="return validCheckUpdate(this,'${targetToShow.num}','${targetToShow.writer}','${user.myId}');">
+    				<input type="button" value="글 삭제하기" class="article-delete" onclick="return validCheckDelete(this,'${targetToShow.num}','${targetToShow.writer}','${user.myId}');">
+    			</div>
     			<!-- 댓글 -->
     			<div class="reply-container">
     				<div class="reply">
     					<div class="reply-content">
-    						<label>작성자 : <input type="text" class="id" name="id"></label>
+    						<label>작성자 : <input type="text" class="id" value="${user.myId}" name="id" readonly></label>
     						<textarea name="reply" class="register-content" cols="10" rows="10"></textarea>
-    						<input type="submit" value="댓글작성하기" class="register">
+    						<input type="submit" value="댓글작성하기" class="register" onclick="return replyChk();">
     					</div>
     					<div class="attach-apply-content">
     					 <input type="hidden" name="reparent-order" value="">
@@ -141,9 +146,9 @@
     											<span>${rpList.content}</span>
     										</div>
     										<div class="specific-btns">
-    											<input type="button" value="댓글작성하기" title="댓글을 작성" class="register-rp-to-this" onclick="regReply(this);handlerCheck(this);">
-    											<input type="button" value="수정" class="update-on-this" onclick="handleUpdate(this); updateContent(this,'${rpList.id}','${rpList.content}');">
-    											<input type="button" value="삭제" class="delete-on-this" onclick="handleDelete(this); deleteContent(this,${parent.boardId},${parent.num});">
+    											<input type="button" value="댓글작성하기" title="댓글을 작성" class="register-rp-to-this" onclick="regReply(this);handlerCheck(this);return replyChk();">
+    											<input type="button" value="수정" class="update-on-this" onclick="handleUpdate(this); return updateContent(this,'${user.myId}','${rpList.id}','${rpList.content}');">
+    											<input type="button" value="삭제" class="delete-on-this" onclick="handleDelete(this); return deleteContent(this,'${user.myId}','${rpList.id}','${parent.boardId}','${parent.num}');">
     										</div>
     							  		</div>
     							  	</c:if>		
@@ -157,8 +162,8 @@
     	</form>
     	</article>
     </section>
-    <script src="./js/header.js"></script>
-    <script src="./js/target.js"></script>
-    <script src="./js/login.js"></script>
+    <script src="<%=request.getContextPath() %>/js/header.js"></script>
+    <script src="<%=request.getContextPath() %>/js/target.js"></script>
+    <script src="<%=request.getContextPath() %>/js/login.js"></script>
 </body>
 </html>

@@ -15,6 +15,8 @@ public interface LostDao {
 	String updateWatchQuery="UPDATE REGLOST SET WATCH=(WATCH+1) WHERE NUM=?";
 	//num최댓값 가져오기
 	String selectMaxNum   = "SELECT MAX(NUM) FROM REGLOST";
+	//원글 수정하기
+	String  updateOriginLostArticleQuery="UPDATE REGLOST SET TITLE=?, LOSTDATE=?,PROVINCE=?,RESERV=?,LOSTPLACE=?,LOSTPIC=?,DETAIL=?,SPECIES=?, CATE=?,ETC=? WHERE NUM=?";
 	
 	//해당 게시글의 전체 댓글 수 조회
 	String countReplyQuery = "SELECT COUNT(REPLY_ORDER) FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? AND NUM=? AND LEV > 0";
@@ -46,7 +48,7 @@ public interface LostDao {
 	//댓글 삭제
 	String deleteReplyQuery="DELETE FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? AND NUM=? AND REPLY_ORDER=?";
 	//order로 특정 댓글 선택
-	String selectReplyOneQuery="SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, REPLYTAB, ID, CONTENT, REGDATE FROM REGLOST WHERE REPLY_ORDER=?";
+	String selectReplyOneQuery="SELECT BOARD_ID,REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, REPLYTAB, ID, CONTENT, REGDATE FROM REPLY_ON_LOSTDETAIL WHERE REPLY_ORDER=?";
 	
 
 	
@@ -58,8 +60,8 @@ public interface LostDao {
 	public LostDto selectOne(int no);
 	//게시글 작성
 	public int     registerLost(LostDto dto, ReplyDto reply);
-	//게시글 수정
-	public int     updateLostInfo(LostDto dto);
+	//게시글 수정-댓글 content부분도 수정
+	public int     updateLostInfo(LostDto dto,ReplyDto reply);
 	//게시글 삭제
 	public int     deleteLostInfo(int no);
 	//게시글 총 페이지

@@ -7,12 +7,14 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.oreilly.servlet.MultipartRequest;
 import com.oreilly.servlet.multipart.DefaultFileRenamePolicy;
 import com.test.dao.lostDao.LostDaoImpl;
 import com.test.dto.lostDto.LostDto;
 import com.test.dto.replyDto.ReplyDto;
+import com.test.dto.userDto.UserDto;
 
 public class RegisterLostArticleAction implements Action{
 
@@ -30,6 +32,7 @@ public class RegisterLostArticleAction implements Action{
 		String dir      = context .getRealPath("lostAnimal");
 		System.out.println(dir);
 		String encType  = "UTF-8";
+		HttpSession session= null;
 		
 		try {
 			MultipartRequest multi = new MultipartRequest(
@@ -61,6 +64,13 @@ public class RegisterLostArticleAction implements Action{
 			String msg     = "";
 			int   num      = 0;
 			int   ord	   = dao.selectMaxOrderOfBoard();
+			UserDto user   = null;
+			String url	   ="";
+			
+			session = request.getSession();
+			
+			user = (UserDto)session.getAttribute("user");
+			
 			
 			if(detail==null) {
 				detail="-";
@@ -100,20 +110,29 @@ public class RegisterLostArticleAction implements Action{
 			System.out.println(dto);
 			regRes= dao.registerLost(dto, target);
 			
+			
 			/*
 			 * (1,1,1,0,1,NULL,0,'ADMIN','테스트글1','21/06/01')
 			 * */
 			
 			System.out.println("root: "+target);
-			
-			if(regRes > 0) {
-				msg = new StringBuilder(writer+"님,실종신고 등록이 완료되었습니다!").toString();
+			String connect = request.getContextPath();
+			//권한이 있을 경우에만 글작성할 수 있도록!
+			if(user==null) {
+				msg = "회원가입 및 로그인을 부탁드립니다";
+				url = connect+"/login.do?command=logIn";
 			}else {
-				msg = new StringBuilder(writer+"님,실종신고 등록을 다시 시도해주세요").toString();
-				
+				if(regRes > 0) {
+					msg = new StringBuilder(writer+"님,실종신고 등록이 완료되었습니다!").toString();
+					url = connect+"/lost.do?command=lostMain&page=1";
+				}else {
+					msg = new StringBuilder(writer+"님,실종신고 등록을 다시 시도해주세요").toString();
+					url = connect+"/lost.do?command=lostMain&page=1";
+					
+				}
 			}
 			
-			alertByJavascript(msg,"lost.do?command=lostMain&page=1",response);
+			alertByJavascript(msg,url,response);
 			
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -134,4 +153,6 @@ public class RegisterLostArticleAction implements Action{
 		
 		out.print(alert);
 	}
+	
+	
 }

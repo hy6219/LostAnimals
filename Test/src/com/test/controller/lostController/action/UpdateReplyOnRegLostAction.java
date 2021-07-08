@@ -6,15 +6,19 @@ import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.test.dao.lostDao.LostDaoImpl;
 import com.test.dto.replyDto.ReplyDto;
+import com.test.dto.userDto.UserDto;
 
 public class UpdateReplyOnRegLostAction implements Action{
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=UTF-8");
 		LostDaoImpl dao = LostDaoImpl.getInstance();
 		ReplyDto    dto = new ReplyDto();
 		
@@ -26,25 +30,40 @@ public class UpdateReplyOnRegLostAction implements Action{
 		
 		String id  = request.getParameter("id");
 		String content= request.getParameter("reply");
-		
-		dto.setBoardId(boardId);
-		dto.setReplyOrder(order);
-		dto.setNum(num);
-		dto.setId(id);
-		dto.setContent(content);
-		
-		int upReply = dao.updateReply(dto);
 		String msg = "";
 		String url = "";
-		url=context+"/lost.do?command=lostMain&page=1";
 		
-		if(upReply > 0) {
-			msg="댓글 수정 성공";
-		}else {
-			msg="댓글 수정 실패";
+		//세션에 로그인한 유저와 수정을 시도하려는 사용자가 일치하는지 확인 필요(미연의 상황에 대처)
+		ReplyDto comp = dao.selectReply(order);
+		String compId = comp.getId();
+		
+		HttpSession session=request.getSession();
+		UserDto user = (UserDto)session.getAttribute("user");
+		String sessionId=user.getMyId();
+		
+		int upReply =0;
+		
+		if(sessionId.equals(compId) && comp!=null && user!=null && sessionId!=null) {
+			dto.setBoardId(boardId);
+			dto.setReplyOrder(order);
+			dto.setNum(num);
+			dto.setId(id);
+			dto.setContent(content);
+			
+			upReply = dao.updateReply(dto);
+			
+			url=context+"/lost.do?command=lostMain&page=1";
+			
+			if(upReply > 0) {
+				msg="댓글 수정 성공";
+			}else {
+				msg="댓글 수정 실패";
+			}
+			
 		}
 		
 		alertByJavascript(msg,url,response);
+		
 	}
 	//캡슐화
 	private void alertByJavascript(String msg, String url , HttpServletResponse response) throws IOException {

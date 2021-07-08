@@ -6,9 +6,11 @@ import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import com.test.dao.lostDao.LostDaoImpl;
 import com.test.dto.replyDto.ReplyDto;
+import com.test.dto.userDto.UserDto;
 
 public class DeleteReplyOnRegAction implements Action{
 
@@ -24,19 +26,35 @@ public class DeleteReplyOnRegAction implements Action{
 		int order  = dao.getReplyOrderValue(boardId, num, ordIdx);
 		
 		//ReplyDto stan = dao.selectReply(order);
-		
-		dto.setBoardId(boardId);
-		dto.setReplyOrder(order);
-		dto.setNum(num);
-		
-		int delRes = dao.deleteReply(dto);
-		String url = "lost.do?command=lostMain&page=1";
+		//미연의 상황에 대비해서 정말 사용자가 일치하는지 한번더 확인
+		ReplyDto comp = dao.selectReply(order);
+		String   compId=comp.getId();
+		HttpSession session = request.getSession();
+		UserDto user =  ((UserDto)session.getAttribute("user"));
+		String  sessionId =user.getMyId();
+		String url = "";
 		String msg = "";
+		int delRes =0;
+		String context=request.getContextPath();
 		
-		if(delRes > 0) {
-			msg = "댓글 삭제 성공";
+		if(sessionId.equals(compId) && comp!=null && sessionId!=null) {
+			dto.setBoardId(boardId);
+			dto.setReplyOrder(order);
+			dto.setNum(num);
+			
+		    delRes = dao.deleteReply(dto);
+			url = context+"/lost.do?command=lostMain&page=1";
+			msg = "";
+			
+			if(delRes > 0) {
+				msg = "댓글 삭제 성공";
+			}else {
+				msg = "댓글 삭제 실패";
+			}
+			
 		}else {
-			msg = "댓글 삭제 실패";
+			msg="잘못된 접근입니다";
+			url=context;
 		}
 		
 		alertByJavascript(msg,url,response);

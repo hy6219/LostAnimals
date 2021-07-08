@@ -134,3 +134,18 @@ section article.main div.article-container div.reply-container div.attach-apply-
 	border-left:0;
 	border-right:2px solid dodgerblue;
 }
+section article.main div.article-container div.mod-container{
+	position:absolute;
+	top:530px;	
+}
+
+section article.main div.article-container input[type=button].article-update,
+section article.main div.article-container input[type=button].article-delete{
+	width:100px;
+	padding:5px;
+	color:white;
+	font-size:1rem;
+	background-color:dodgerblue;
+	border:2px solid transparent;
+	border-radius:10px;
+}

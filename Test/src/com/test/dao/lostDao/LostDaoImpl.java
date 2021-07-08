@@ -228,9 +228,55 @@ public class LostDaoImpl implements LostDao{
 	}
 	//게시글 수정
 	@Override
-	public int updateLostInfo(LostDto dto) {
+	public int updateLostInfo(LostDto dto, ReplyDto reply) {
 		// TODO Auto-generated method stub
-		return 0;
+		int temp1 = updateReply(reply);
+		int temp2 = updateWatch(dto.getNum());
+		int temp3 =0;
+		int tot  = 0;
+		/*
+		 * UPDATE REGLOST SET TITLE=?, LOSTDATE=?,PROVINCE=?,RESERV=?,LOSTPLACE=?,
+		 * LOSTPIC=?,DETAIL=?,
+		 * SPECIES=?, CATE=?,ETC=? WHERE NUM=?
+		 * */
+		try {
+			
+			conn = getConnection();
+			ps   = conn.prepareStatement(updateOriginLostArticleQuery);
+			
+			ps.setString(1, dto.getTitle());
+			ps.setString(2, dto.getLostDate());
+			ps.setString(3, dto.getProvince());
+			ps.setString(4, dto.getReserv());
+			ps.setString(5, dto.getLostPlace());
+			ps.setString(6, dto.getLostPic());
+			ps.setString(7, dto.getDetail());
+			ps.setString(8, dto.getSpecies());
+			ps.setString(9, dto.getCate());
+			ps.setString(10, dto.getEtc());
+			ps.setInt(11,dto.getNum());
+			
+			temp3 = ps.executeUpdate();
+			
+			if(temp1 >0 && temp2>0 && temp3>0) {
+				tot=1;
+				commit(conn);
+				System.out.println("실종신고 게시판 원글 수정 성공");
+			}else {
+				tot=-1;
+				rollback(conn);
+				System.out.println("실종신고 게시판 원글 수정 실패");
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]원글 수정 실패-실종신고등록게시판");
+		}finally {
+			close(ps);
+			close(conn);
+		}
+		
+		return tot;
 	}	
 	//게시글 삭제
 	@Override
@@ -937,18 +983,21 @@ public class LostDaoImpl implements LostDao{
 			conn = getConnection();
 			ps   = conn.prepareStatement(selectReplyOneQuery);
 			
+			ps.setInt(1, replyOrder);
 			rs   = ps.executeQuery();
-			
+			/*SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, REPLYTAB, 
+			 * ID, CONTENT, REGDATE FROM REPLY_ON_LOSTDETAIL WHERE REPLY_ORDER=?*/
 			if(rs.next()) {
-				dto.setReplyOrder(rs.getInt(1));
-				dto.setNum(rs.getInt(2));
-				dto.setLev(rs.getInt(3));
-				dto.setLevSeq(rs.getInt(4));
-				dto.setDepth(String.valueOf(rs.getInt(5)));
-				dto.setReplyTab(rs.getInt(6));
-				dto.setId(rs.getString(7));
-				dto.setContent(rs.getString(8));
-				dto.setRegDate(sf.format(rs.getDate(9)));
+				dto.setBoardId(rs.getInt(1));
+				dto.setReplyOrder(rs.getInt(2));
+				dto.setNum(rs.getInt(3));
+				dto.setLev(rs.getInt(4));
+				dto.setLevSeq(rs.getInt(5));
+				dto.setDepth(String.valueOf(rs.getInt(6)));
+				dto.setReplyTab(rs.getInt(7));
+				dto.setId(rs.getString(8));
+				dto.setContent(rs.getString(9));
+				dto.setRegDate(sf.format(rs.getDate(10)));
 			}
 			
 		}catch(Exception e) {

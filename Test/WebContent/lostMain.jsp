@@ -13,15 +13,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>찾아봐주개냥</title>
-    <link rel="stylesheet" href="./css/header.css?version=210624">
+    <link rel="stylesheet" href="<%=request.getContextPath() %>/css/header.css?version=210624">
     <link rel="shortcut icon" href="lostAnimal/favicon.ico" type="image/x-icon">
 </head>
 <body>
     <header>
         <nav class="nav-bar">
         	<ul class="login">
-        		<li><input type="button" value="로그인" onclick="location.href='login.do?command=logIn';" id="loginHide"></li>
-        		<li><input type="button" value="로그아웃" onclick="location.href='login.do?command=logOut';" id="loginShow"></li>
+        		<li><input type="button" value="로그인" onclick="location.href='<%=request.getContextPath() %>/login.do?command=logIn';" id="loginHide"></li>
+        		<li><input type="button" value="로그아웃" onclick="location.href='<%=request.getContextPath() %>/login.do?command=logOut';" id="loginShow"></li>
         		<li><span id="loginUser">${user.myId}</span></li>
         	</ul>
             <ul class="menu">
@@ -39,8 +39,8 @@
                         <li>보호소 위치</li>
                     </ul>
                     <ul class="toggle lost">
-                        <li><a href="lost.do?command=lostMain&page=1">실종신고</a></li>
-                        <li><a href="">실종되었던 아이 찾은 후기</a></li>
+                        <li><a href="<%=request.getContextPath() %>/lost.do?command=lostMain&page=1">실종신고</a></li>
+                        <li><a href="<%=request.getContextPath() %>/review.do?command=reviewLostMain&page=1">실종되었던 아이 찾은 후기</a></li>
                     </ul>
                     <ul class="toggle adopt">
                         <li>입양절차</li>
@@ -72,9 +72,32 @@
                    <iframe src="./lostCommon/lostCommon.jsp" frameBorder="0"></iframe>
                 </div>
                 <div class="register">
-                <!-- 글 등록 & 확인하기 -->
+                <!-- 글 등록 & 확인하기 , 검색-->
+                	<!-- 지역별 검색 -->
+                	<label for="province">관할별 검색(도/특별시/광역시) :
+							<select name="province" id="province">
+								<option value="서울특별시">서울특별시</option>
+								<option value="인천광역시">인천광역시</option>
+								<option value="부산광역시">부산광역시</option>
+								<option value="대구광역시">대구광역시</option>
+								<option value="대전광역시">대전광역시</option>
+								<option value="울산광역시">울산광역시</option>
+								<option value="광주광역시">광주광역시</option>
+								<option value="세종특별자치시">세종특별자치시</option>
+								<option value="경기도">경기도</option>
+								<option value="강원도">강원도</option>
+								<option value="충청북도">충청북도</option>
+								<option value="충청남도">충청남도</option>
+								<option value="전라북도">전라북도</option>
+								<option value="전라남도">전라남도</option>
+								<option value="경상북도">경상북도</option>
+								<option value="경상남도">경상남도</option>
+								<option value="제주특별자치도">제주특별자치도</option>
+							</select>
+					</label>
+					<input type="button" value="검색" id="prov-search">
                 	<input type="button" value="나의 아이 등록하기" onclick="location.href='<%=request.getContextPath() %>/lost.do?command=registerLost';">
-                	<input type="button" value="내가 등록한 글">
+                	<input type="button" value="내가 등록한 글" id="my-lost-article" onclick="return showMine('${user.myId}');">
                 </div>
                 <div class="contents-container">
                 	<c:choose>
@@ -114,7 +137,9 @@
             </form>
         </article>
     </section>
-    <script src="./js/header.js"></script>
-    <script src="./js/login.js?version=210707"></script>
+    <script src="<%=request.getContextPath() %>/js/header.js"></script>
+    <script src="<%=request.getContextPath() %>/js/login.js?version=210707"></script>
+    <script src="<%=request.getContextPath() %>/js/searchLost.js"></script>
+    <script src="<%=request.getContextPath() %>/js/userLostArticle.js"></script>
 </body>
 </html>

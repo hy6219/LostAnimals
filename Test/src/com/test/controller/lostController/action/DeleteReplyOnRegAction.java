@@ -18,7 +18,7 @@ public class DeleteReplyOnRegAction implements Action{
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		LostDaoImpl dao = LostDaoImpl.getInstance();
-		ReplyDto    dto = new ReplyDto();
+		//ReplyDto    dto = new ReplyDto();
 		
 		int boardId = Integer.valueOf(request.getParameter("boardId"));
 		int num	    = Integer.valueOf(request.getParameter("num"));
@@ -31,19 +31,17 @@ public class DeleteReplyOnRegAction implements Action{
 		String   compId=comp.getId();
 		HttpSession session = request.getSession();
 		UserDto user =  ((UserDto)session.getAttribute("user"));
-		String  sessionId =user.getMyId();
+		String  sessionId =null;
 		String url = "";
 		String msg = "";
 		int delRes =0;
-		String context=request.getContextPath();
+		//String context=request.getContextPath();
 		
-		if(sessionId.equals(compId) && comp!=null && sessionId!=null) {
-			dto.setBoardId(boardId);
-			dto.setReplyOrder(order);
-			dto.setNum(num);
+		
+		if(user!=null && (sessionId=user.getMyId()).equals(compId)) {
 			
-		    delRes = dao.deleteReply(dto);
-			url = context+"/lost.do?command=lostMain&page=1";
+		    delRes = dao.deleteReply(order);
+			url = "lost.do?command=lostMain&page=1";
 			msg = "";
 			
 			if(delRes > 0) {
@@ -54,7 +52,6 @@ public class DeleteReplyOnRegAction implements Action{
 			
 		}else {
 			msg="잘못된 접근입니다";
-			url=context;
 		}
 		
 		alertByJavascript(msg,url,response);

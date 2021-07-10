@@ -17,6 +17,7 @@ public class ReplyDto {
 	private String 	id;
 	private String  content;
 	private String  regDate;
+	private int     delFlag;
 	
 	public ReplyDto() {
 		super();
@@ -24,7 +25,7 @@ public class ReplyDto {
 	}
 
 	public ReplyDto(int boardId, int replyOrder, int num, int lev, int levSeq, String depth, int replyTab, String id, String content,
-			String regDate) {
+			String regDate, int delFlag) {
 		super();
 		this.boardId = boardId;
 		this.replyOrder = replyOrder;
@@ -36,6 +37,7 @@ public class ReplyDto {
 		this.id = id;
 		this.content = content;
 		this.regDate = regDate;
+		this.delFlag = delFlag;
 	}
 
 	public int getBoardId() {
@@ -120,11 +122,19 @@ public class ReplyDto {
 
 	
 
+	public int getDelFlag() {
+		return delFlag;
+	}
+
+	public void setDelFlag(int delFlag) {
+		this.delFlag = delFlag;
+	}
+
 	@Override
 	public String toString() {
 		return "ReplyDto [boardId=" + boardId + ", replyOrder=" + replyOrder + ", num=" + num + ", lev=" + lev
 				+ ", levSeq=" + levSeq + ", depth=" + depth + ", replyTab=" + replyTab + ", id=" + id + ", content="
-				+ content + ", regDate=" + regDate + "]";
+				+ content + ", regDate=" + regDate + ", delFlag="+delFlag+"]";
 	}
 
 	

@@ -25,7 +25,7 @@ public class UpdateLostArticleAction implements Action{
 		
 		HttpSession session= request.getSession();
 		UserDto     user   = (UserDto)session.getAttribute("user");
-		String      sessionId = user.getMyId();//세션아이디
+		String      sessionId = null;//세션아이디
 		//게시글 번호
 		int         num    = Integer.valueOf(request.getParameter("num"));
 		//dao
@@ -36,7 +36,7 @@ public class UpdateLostArticleAction implements Action{
 		String      url    = "";
 		String     context = request.getContextPath();
 		
-		if(compId.equals(sessionId) && comp!=null && sessionId!=null && compId!=null) {
+		if(user!=null && (sessionId=user.getMyId()).equals(compId)) {
 			//글 객체를 request에 싣고, 이동시키기
 			request.setAttribute("toUpdate", comp);
 			url = "./template/updateForm.jsp";

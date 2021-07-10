@@ -1,6 +1,7 @@
 package com.test.controller.lostController;
 
 import com.test.controller.lostController.action.Action;
+import com.test.controller.lostController.action.DeleteLostArticleAction;
 import com.test.controller.lostController.action.DeleteReplyOnRegAction;
 import com.test.controller.lostController.action.LostAnimalAction;
 import com.test.controller.lostController.action.LostMainAction;
@@ -8,6 +9,8 @@ import com.test.controller.lostController.action.ReReplyLostAnimalAction;
 import com.test.controller.lostController.action.RegisterLostAction;
 import com.test.controller.lostController.action.RegisterLostArticleAction;
 import com.test.controller.lostController.action.RegisterReplyAction;
+import com.test.controller.lostController.action.SearchByProvAction;
+import com.test.controller.lostController.action.ShowLostMineAction;
 import com.test.controller.lostController.action.UpdateLostAnimalArticleAction;
 import com.test.controller.lostController.action.UpdateLostArticleAction;
 import com.test.controller.lostController.action.UpdateReplyOnRegLostAction;
@@ -49,6 +52,15 @@ public class ActionFactory {
 			action = new UpdateLostArticleAction();
 		}else if(cmd.equals("updateLostAnimalArticle")) {
 			action = new UpdateLostAnimalArticleAction();
+		}else if(cmd.equals("deleteLostArticle")) {
+			//글삭제
+			action = new DeleteLostArticleAction();
+		}else if(cmd.equals("searchByProv")) {
+			//지역별 조회
+			action = new SearchByProvAction();
+		}else if(cmd.equals("showLostMine")) {
+			//회원이 작성한 게시글 보여주기
+			action = new ShowLostMineAction();
 		}
 		
 		return action;

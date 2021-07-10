@@ -163,6 +163,17 @@ function validCheckDelete(e,num,compId,sessionId){
 	
 }
 
+//function validation(e,val){
+//	var regBan = document.getElementsByClassName("regBan");
+//	
+//	 if(val===1){
+//         for(var i = 0 ; i < regBan.length; i++){
+//             regBan[i].disabled="disabled";
+//          }
+//      }
+//
+//}
+
 //	ord.value=val;
 	//console.log(val);
 

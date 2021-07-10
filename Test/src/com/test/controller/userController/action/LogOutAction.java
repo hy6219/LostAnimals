@@ -17,7 +17,7 @@ public class LogOutAction implements Action{
 		
 		session.invalidate();
 		
-		response.sendRedirect("./index.jsp");
+		response.sendRedirect("lost.do?command=lostMain&page=1");
 		
 	}
 

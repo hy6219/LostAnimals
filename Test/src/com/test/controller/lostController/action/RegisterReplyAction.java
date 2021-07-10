@@ -23,16 +23,16 @@ public class RegisterReplyAction implements Action{
 
 		//부모노드의 ReplyDto 객체 가져오기
 		int boardId = Integer.valueOf(request.getParameter("boardId"));
-		String tmp  =request.getParameter("reparent-order");
-		
-		int toFind = 0;
-		
-		if(tmp.equals("")) {
-			toFind = 0;	
-		}else {
-			toFind = Integer.valueOf(tmp);
-		}
-		
+//		String tmp  =request.getParameter("reparent-order");
+//		
+//		int toFind = 0;
+//		
+//		if(tmp.equals("")) {
+//			toFind = 0;	
+//		}else {
+//			toFind = Integer.valueOf(tmp);
+//		}
+//		
 		
 		ReplyDto parent= dao.selectSpecificReply(boardId, parentNum, 0, 1);
 		

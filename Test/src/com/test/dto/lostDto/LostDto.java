@@ -1,6 +1,5 @@
 package com.test.dto.lostDto;
 
-import java.util.Date;
 
 public class LostDto {
 	private int num;

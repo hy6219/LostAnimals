@@ -40,8 +40,8 @@
                         <li>보호소 위치</li>
                     </ul>
                     <ul class="toggle lost">
-                        <li><a href="lost.do?command=lostMain&page=1">실종신고</a></li>
-                        <li><a href="">실종되었던 아이 찾은 후기</a></li>
+                        <li><a href="<%=request.getContextPath() %>/lost.do?command=lostMain&page=1">실종신고</a></li>
+                        <li><a href="<%=request.getContextPath() %>/review.do?command=reviewLostMain&page=1">실종되었던 아이 찾은 후기</a></li>
                     </ul>
                     <ul class="toggle adopt">
                         <li>입양절차</li>

@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -278,12 +277,6 @@ public class LostDaoImpl implements LostDao{
 		
 		return tot;
 	}	
-	//게시글 삭제
-	@Override
-	public int deleteLostInfo(int no) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 
 	@Override
 	public int totalPage() {
@@ -373,7 +366,7 @@ public class LostDaoImpl implements LostDao{
 		List<ReplyDto> list = new ArrayList<>();
 		/*
 		 SELECT TARGET.* FROM (SELECT BOARD_ID, REPLY_ORDER, NUM, LEV,LEV_SEQ, DEPTH,
-		 REPLYTAB, ID, CONTENT, REGDATE FROM REPLY_ON_LOSTDETAIL 
+		 REPLYTAB, ID, CONTENT, REGDATE , DEL_FLAG FROM REPLY_ON_LOSTDETAIL 
 		 START WITH DEPTH IS NULL CONNECT BY NOCYCLE 
 		 PRIOR REPLY_ORDER=NUM ORDER SIBLINGS BY LEV,LEV_SEQ) TARGET WHERE BOARD_ID=? AND NUM=?
 		 * */
@@ -407,6 +400,7 @@ public class LostDaoImpl implements LostDao{
 				dto.setId(rs.getString(8));
 				dto.setContent(rs.getString(9));
 				dto.setRegDate(sf.format(rs.getDate(10)));
+				dto.setDelFlag(rs.getInt(11));
 				
 				list.add(dto);
 			}
@@ -426,7 +420,7 @@ public class LostDaoImpl implements LostDao{
 	public ReplyDto selectSpecificReply(int boardId, int num, int lev, int levSeq) {
 		// TODO Auto-generated method stub
 		/*
-		SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, REPLYTAB, ID, CONTENT, REGDATE
+		SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, REPLYTAB, ID, CONTENT, REGDATE,, DEL_FLAG
 		FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? AND NUM=? AND LEV=? AND LEV_SEQ=?
 		 * 
 		 * */
@@ -456,6 +450,7 @@ public class LostDaoImpl implements LostDao{
 				target.setId(rs.getString(8));
 				target.setContent(rs.getString(9));
 				target.setRegDate(sf.format(rs.getDate(10)));
+				target.setDelFlag(rs.getInt(11));
 			}
 			
 		}catch(Exception e) {
@@ -760,7 +755,7 @@ public class LostDaoImpl implements LostDao{
 		/*
 		 * String  selectParentReplyQuery= "SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, 
 		 * REPLYTAB,
-		 *  ID, CONTENT, REGDATE FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? 
+		 *  ID, CONTENT, REGDATE, DEL_FLAG FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? 
 		 * AND NUM=? AND REPLY_ORDER=?
 		 * 
 		 * */
@@ -786,6 +781,7 @@ public class LostDaoImpl implements LostDao{
 				dto.setId(rs.getString(8));
 				dto.setContent(rs.getString(9));
 				dto.setRegDate(sf.format(rs.getDate(10)));
+				dto.setDelFlag(rs.getInt(11));
 
 			}
 			
@@ -935,10 +931,10 @@ public class LostDaoImpl implements LostDao{
 
 	//댓글 삭제
 	@Override
-	public int deleteReply(ReplyDto dto) {
+	public int deleteReply(int replyOrder) {
 		// TODO Auto-generated method stub
 		/*
-		 *DELETE FROM REPLY_ON_LOSTDETAIL WHERE BOARD_ID=? AND NUM=? AND REPLY_ORDER=? 
+		String deleteReplyQuery="UPDATE REPLY_ON_LOSTDETAIL SET DEL_FLAG=1 WHERE REPLY_ORDER=?";
 		 */
 		int delRes = 0;
 		
@@ -948,9 +944,7 @@ public class LostDaoImpl implements LostDao{
 			
 			ps   = conn.prepareStatement(deleteReplyQuery);
 			
-			ps.setInt(1, dto.getBoardId());
-			ps.setInt(2, dto.getNum());
-			ps.setInt(3, dto.getReplyOrder());
+			ps.setInt(1, replyOrder);
 			
 			delRes = ps.executeUpdate();
 			
@@ -986,7 +980,7 @@ public class LostDaoImpl implements LostDao{
 			ps.setInt(1, replyOrder);
 			rs   = ps.executeQuery();
 			/*SELECT BOARD_ID, REPLY_ORDER, NUM, LEV, LEV_SEQ, DEPTH, REPLYTAB, 
-			 * ID, CONTENT, REGDATE FROM REPLY_ON_LOSTDETAIL WHERE REPLY_ORDER=?*/
+			 * ID, CONTENT, REGDATE, DEL_FLAG FROM REPLY_ON_LOSTDETAIL WHERE REPLY_ORDER=?*/
 			if(rs.next()) {
 				dto.setBoardId(rs.getInt(1));
 				dto.setReplyOrder(rs.getInt(2));
@@ -998,6 +992,7 @@ public class LostDaoImpl implements LostDao{
 				dto.setId(rs.getString(8));
 				dto.setContent(rs.getString(9));
 				dto.setRegDate(sf.format(rs.getDate(10)));
+				dto.setDelFlag(rs.getInt(11));
 			}
 			
 		}catch(Exception e) {
@@ -1082,7 +1077,311 @@ public class LostDaoImpl implements LostDao{
 		return resMax;
 	}
 
+	@Override
+	public int deleteLost(int boardId, LostDto dto) {
+		// TODO Auto-generated method stub
+		/*
+		 * String deleteOriginLostArticleQuery="DELETE FROM REGLOST WHERE 
+		 * AND NUM=? AND WRITER=?";//writer는 미연을 위함!
+		 * 
+		 * */
+		int temp1 =0;
+		int temp2 =0;
+		int delRes =0;
+		int num = dto.getNum();
+		
+		temp1 = deleteReplyCascade(boardId,num);
+		
+		try {
+			
+			conn = getConnection();
+			ps    = conn.prepareStatement(deleteOriginLostArticleQuery);
+			
+			ps.setInt(1, num);
+			ps.setString(2, dto.getWriter());
+			
+			temp2 = ps.executeUpdate();
+			
+			if(temp1 >0 && temp2>0) {
+				System.out.println("원글 및 원글의 모든 댓글 삭제 성공");
+				delRes = 1;
+				commit(conn);
+			}else {
+				System.out.println("원글 및 원글의 모든 댓글 삭제 과정 오류");
+				delRes = -1;
+				rollback(conn);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]원글 삭제 실패");
+		}finally {
+			close(ps);
+			close(conn);
+		}
+		
+		
+		return delRes;
+	}
 
+	@Override
+	public int deleteReplyCascade(int boardId, int num) {
+		// TODO Auto-generated method stub
+		/*
+		 * String deleteReplyByCascadeQuery="DELETE FROM REPLY_ON_LOSTDETAIL 
+		 * WHERE BOARD_ID=? AND NUM=?
+		 * 
+		 * */
+		int delRp = 0;
+		
+		try {
+			
+			conn = getConnection();
+			ps   = conn.prepareStatement(deleteReplyByCascadeQuery);
+			
+			ps.setInt(1, boardId);
+			ps.setInt(2, num);
+			
+			delRp = ps.executeUpdate();
+			
+			if(delRp > 0) {
+				System.out.println("원글에 달린 댓글 모두 삭제 성공");
+				//commit(conn);
+			}else {
+				System.out.println("댓글에 달린 댓글 모두 삭제 실패");
+			//	rollback(conn);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]해당 원글의 모든 댓글 삭제 실패");
+		}finally {
+			close(ps);
+			close(conn);
+		}
+		
+		
+		return delRp;
+	}
 	
-	
+	//해당 지역의 총 게시글 수 카운트하기
+	@Override
+	public int countProvLostArticle(String province) {
+		// TODO Auto-generated method stub
+		/*
+		 * String countLostArticleByProvQuery=SELECT COUNT(NUM)
+FROM (SELECT NUM, WRITER, TITLE, TEL, LOSTDATE, PROVINCE, RESERV, LOSTPLACE,
+LOSTPIC, DETAIL, SPECIES, CATE, ETC, WATCH
+FROM   REGLOST
+WHERE  PROVINCE=?);
+		 * */
+		int cnt = 0;
+		
+		try {
+			
+			conn = getConnection();
+			ps   = conn.prepareStatement(countLostArticleByProvQuery);
+			
+			ps.setString(1, province);
+			
+			rs  = ps.executeQuery();
+			
+			if(rs.next()) {
+				cnt = rs.getInt(1);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]특정 지역 게시물 갯수 조회 실패");
+		}finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+		
+		return cnt;
+	}
+
+	@Override
+	public int totalProvPage(String province) {
+		// TODO Auto-generated method stub
+		int temp1=countProvLostArticle(province);
+		int tot  = 0;
+		final int unit = 9;//9개씩 끊어서 보여줄것
+		
+		tot = (int)(Math.ceil((double)temp1/unit));
+		
+		return tot;
+	}
+
+	@Override
+	public List<LostDto> selectLostArticleByProv(String province, int page) {
+		// TODO Auto-generated method stub
+		/*
+		 * String searchLostArticleByProvQuery="SELECT P.* FROM 
+		 * (SELECT ROWNUM R, PROV.* FROM (SELECT NUM, WRITER, TITLE, TEL, 
+		 * LOSTDATE, PROVINCE, RESERV, LOSTPLACE,LOSTPIC, DETAIL, SPECIES, CATE, ETC, WATCH FROM   
+		 * REGLOST WHERE  PROVINCE=? ORDER  BY NUM DESC) PROV)P 
+		 * WHERE P.R BETWEEN ? AND ?";
+		 * */
+		
+		List<LostDto> list = new ArrayList<>();
+		final int     unit = 9;
+		int           stIdx= unit*page-8;//1,10,...
+		int           finIdx=unit*page;//9,18,...
+		
+		try {
+			
+			conn = getConnection();
+			ps   = conn.prepareStatement(searchLostArticleByProvQuery);
+			
+			ps.setString(1, province);
+			ps.setInt(2, stIdx);
+			ps.setInt(3, finIdx);
+			
+			rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				LostDto dto = new LostDto();
+				
+				dto.setNum(rs.getInt(2));
+				dto.setTitle(rs.getString(3));
+				dto.setWriter(rs.getString(4));
+				dto.setTel(rs.getString(5));
+				dto.setLostDate(rs.getString(6));
+				dto.setProvince(rs.getString(7));
+				dto.setReserv(rs.getString(8));
+				dto.setLostPlace(rs.getString(9));
+				dto.setLostPic(rs.getString(10));
+				dto.setDetail(rs.getString(11));
+				dto.setSpecies(rs.getString(12));
+				dto.setCate(rs.getString(13));
+				dto.setEtc(rs.getString(14));
+				
+				list.add(dto);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]지역별 조회 실패");
+		}finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+		
+		return list;
+	}
+
+	@Override
+	public int countMyLostArticle(String writer) {
+		// TODO Auto-generated method stub
+		
+		/*
+		 * String  countMyLostArticleQuery="SELECT COUNT(NUM) FROM 
+		 * (SELECT NUM, WRITER, TITLE, TEL, LOSTDATE, PROVINCE, RESERV, 
+		 * LOSTPLACE,LOSTPIC, DETAIL, SPECIES, CATE, 
+		 * ETC, WATCH FROM REGLOST WHERE WRITER=?)";
+		 * 
+		 * */
+		int cnt = 0;
+		
+		try {
+			
+			conn  = getConnection();
+			ps    = conn.prepareStatement(countMyLostArticleQuery);
+			
+			ps.setString(1, writer);
+			
+			rs    = ps.executeQuery();
+			
+			if(rs.next()) {
+				cnt = rs.getInt(1);
+			}
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]회원이 작성한 총 게시물 수 조회 실패");
+		}finally {
+			close(rs);
+			close(ps);
+			close(conn);
+		}
+		
+		
+		return cnt;
+	}
+
+	@Override
+	public int totalMyLostArticlePage(String writer) {
+		// TODO Auto-generated method stub
+		int res = countMyLostArticle(writer);
+		//9개씩 보여줄 것
+		final int unit = 9;
+		int tot = (int)(Math.ceil((double)res/unit));
+		
+		return tot;
+	}
+
+	@Override
+	public List<LostDto> selectMyLostArticle(String writer, int page) {
+		// TODO Auto-generated method stub
+		/*
+		 * String  searchMyLostArticleQuery ="SELECT DATA.* FROM (SELECT ROWNUM R, MINE.* 
+		 * FROM (SELECT NUM, WRITER, TITLE, TEL, LOSTDATE, PROVINCE, RESERV, LOSTPLACE,
+		 * LOSTPIC, DETAIL, SPECIES, CATE, ETC, WATCH FROM REGLOST WHERE  WRITER=? ORDER  
+		 * BY NUM DESC) MINE) 
+		 * DATA WHERE  DATA.R BETWEEN ? AND ?";
+		 * 
+		 * */
+		List<LostDto> list = new ArrayList<>();
+		//9개씩 끊어서 보여줄 것
+		final int     unit = 9;
+		int           stIdx= unit*page-8;//1,10,...
+		int           finIdx=unit*page;//9,18,...
+		
+		try {
+			
+			conn = getConnection();
+			ps   = conn.prepareStatement(searchMyLostArticleQuery);
+			
+			ps.setString(1, writer);
+			ps.setInt(2, stIdx);
+			ps.setInt(3, finIdx);
+			
+			rs   = ps.executeQuery();
+			
+			while(rs.next()) {
+				LostDto dto = new LostDto();
+				
+				dto.setNum(rs.getInt(2));
+				dto.setTitle(rs.getString(3));
+				dto.setWriter(rs.getString(4));
+				dto.setTel(rs.getString(5));
+				dto.setLostDate(rs.getString(6));
+				dto.setProvince(rs.getString(7));
+				dto.setReserv(rs.getString(8));
+				dto.setLostPlace(rs.getString(9));
+				dto.setLostPic(rs.getString(10));
+				dto.setDetail(rs.getString(11));
+				dto.setSpecies(rs.getString(12));
+				dto.setCate(rs.getString(13));
+				dto.setEtc(rs.getString(14));
+				
+				list.add(dto);
+			}
+			
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			System.out.println("[ERR]회원이 작성한 게시글 탐색 실패");
+		}finally {
+			close(ps);
+			close(conn);
+		}
+		
+		return list;
+	}
 }

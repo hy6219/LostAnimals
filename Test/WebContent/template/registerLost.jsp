@@ -37,8 +37,8 @@
                         <li>보호소 위치</li>
                     </ul>
                     <ul class="toggle lost">
-                        <li><a href="lost.do?command=lostMain&page=1">실종신고</a></li>
-                        <li><a href="">실종되었던 아이 찾은 후기</a></li>
+                        <li><a href="<%=request.getContextPath() %>/lost.do?command=lostMain&page=1">실종신고</a></li>
+                        <li><a href="<%=request.getContextPath() %>/review.do?command=reviewLostMain&page=1">실종되었던 아이 찾은 후기</a></li>
                     </ul>
                     <ul class="toggle adopt">
                         <li>입양절차</li>
@@ -77,7 +77,7 @@
 					</tr>
 					<tr>
 						<th>연락처</th>
-						<td><input type="tel" name="tel" placeholder="010-1234-5678" required></td>
+						<td><input type="tel" name="tel" value="${user.myPhone}" placeholder="010-1234-5678" required readonly></td>
 					</tr>
 					<tr>
 				 		<th>잃어버린 날짜</th>

@@ -39,11 +39,11 @@ public class UpdateReplyOnRegLostAction implements Action{
 		
 		HttpSession session=request.getSession();
 		UserDto user = (UserDto)session.getAttribute("user");
-		String sessionId=user.getMyId();
+		String sessionId=null;
 		
 		int upReply =0;
 		
-		if(sessionId.equals(compId) && comp!=null && user!=null && sessionId!=null) {
+		if(user!=null && (sessionId=user.getMyId()).equals(compId)) {
 			dto.setBoardId(boardId);
 			dto.setReplyOrder(order);
 			dto.setNum(num);

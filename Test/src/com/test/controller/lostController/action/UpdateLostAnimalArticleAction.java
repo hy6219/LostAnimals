@@ -33,7 +33,7 @@ public class UpdateLostAnimalArticleAction implements Action{
 		String dir      = context .getRealPath("lostAnimal");
 		System.out.println(dir);
 		String encType  = "UTF-8";
-		HttpSession session= null;
+
 		
 		try {
 			MultipartRequest multi = new MultipartRequest(

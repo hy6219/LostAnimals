@@ -38,8 +38,8 @@
                         <li>보호소 위치</li>
                     </ul>
                     <ul class="toggle lost">
-                        <li><a href="lost.do?command=lostMain&page=1">실종신고</a></li>
-                        <li><a href="">실종되었던 아이 찾은 후기</a></li>
+                        <li><a href="<%=request.getContextPath() %>>lost.do?command=lostMain&page=1">실종신고</a></li>
+                        <li><a href="<%=request.getContextPath() %>/review.do?command=reviewLostMain&page=1">실종되었던 아이 찾은 후기</a></li>
                     </ul>
                     <ul class="toggle adopt">
                         <li>입양절차</li>
@@ -72,7 +72,7 @@
     	  <input type="hidden" name="tab" value="${parent.replyOrder }"> 
     	  <input type="hidden" name="seq" value="${parent.levSeq }">
     	  <input type="hidden" name="depth" value="${parent.depth }">
-    	  <input type="hidden" name="article" value="${targetToShow}"/>
+<%--     	  <input type="hidden" name="article" value="${targetToShow}"/> --%>
     	  <c:set var="ord" value="${parent.replyOrder}"/>
     	  <div class="article-container">
     		<div class="lostAnimalImg">
@@ -138,20 +138,35 @@
     							<c:forEach var="rpList" items="${reply}">
     								 <c:if test="${rpList.replyOrder != ord}">
     						 			  <div class="reply-content-container">
-    										<c:forEach begin="1" end="${rpList.replyTab}">
-    											<span>&nbsp;</span>
-    										</c:forEach>
-    										<span class="reply-writer">↪댓글 작성자: ${rpList.id}</span>
-    										<div class="rpContent">
-    											<span>${rpList.content}</span>
-    										</div>
-    										<div class="specific-btns">
-    											<input type="button" value="댓글작성하기" title="댓글을 작성" class="register-rp-to-this" onclick="regReply(this);handlerCheck(this);return replyChk();">
-    											<input type="button" value="수정" class="update-on-this" onclick="handleUpdate(this); return updateContent(this,'${user.myId}','${rpList.id}','${rpList.content}');">
-    											<input type="button" value="삭제" class="delete-on-this" onclick="handleDelete(this); return deleteContent(this,'${user.myId}','${rpList.id}','${parent.boardId}','${parent.num}');">
-    										</div>
+    										<c:choose>
+    											<c:when test="${rpList.delFlag==1}">
+    											<!-- 삭제된 경우 -->
+    												<span>해당 글은 삭제되었습니다</span>
+    												<div class="specific-btns">
+    													<input type="button" value="댓글작성하기" title="댓글을 작성" class="regBan register-rp-to-this" disabled>
+    													<input type="button" value="수정" class="regBan update-on-this" disabled>
+    													<input type="button" value="삭제" class="regBan delete-on-this" disabled>
+    												</div>
+    											</c:when>
+    											<c:otherwise>
+    											<!-- 댓글이 삭제되지 않은 경우 -->
+    												<c:forEach begin="1" end="${rpList.replyTab}">
+    													<span>&nbsp;</span>
+    												</c:forEach>
+    												<span class="reply-writer">↪댓글 작성자: ${rpList.id}</span>
+    												<div class="rpContent">
+    													<span>${rpList.content}</span>
+    												</div>
+    												<div class="specific-btns">
+    													<input type="button" value="댓글작성하기" title="댓글을 작성" class="regBan register-rp-to-this" onclick="regReply(this);handlerCheck(this);return replyChk(); validation(this,'${rpList.delFlag}');">
+		    											<input type="button" value="수정" class="regBan update-on-this" onclick="handleUpdate(this); return updateContent(this,'${user.myId}','${rpList.id}','${rpList.content}');validation(this,'${rpList.delFlag}');">
+    													<input type="button" value="삭제" class="regBan delete-on-this" onclick="handleDelete(this); return deleteContent(this,'${user.myId}','${rpList.id}','${parent.boardId}','${parent.num}'); validation(this,'${rpList.delFlag}');">
+    												</div>
+    											</c:otherwise>
+    										</c:choose>
+    										
     							  		</div>
-    							  	</c:if>		
+    							  	</c:if>	
     							</c:forEach>
     						</c:when>
     					</c:choose>

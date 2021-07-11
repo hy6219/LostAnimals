@@ -1,5 +1,7 @@
 var menu = document.querySelector(".menu");
 var drop = document.querySelector(".drop");
+var opts = document.getElementsByClassName("menu-li");
+var FOCUS="foucs";
 function showHeader(){
     var hidden = document.querySelector(".hide");
     var check  = window.getComputedStyle(hidden).getPropertyValue("display");
@@ -17,10 +19,12 @@ function hideHeader(){
     }
 }
 
+
+
+
 menu.addEventListener("mouseover",showHeader);
 drop.addEventListener("mouseover",showHeader);
 menu.addEventListener("mouseleave",hideHeader);
 drop.addEventListener("mouseleave",hideHeader);
-
 
 

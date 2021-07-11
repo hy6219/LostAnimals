@@ -7,8 +7,9 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<script>
+<!-- 	<script>
 		location.href="lost.do?command=lostMain&page=1";
-	</script>
+	</script> -->
+	<jsp:include page="./header.jsp"/>
 </body>
 </html>

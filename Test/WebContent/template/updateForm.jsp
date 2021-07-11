@@ -13,58 +13,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>찾아봐주개냥</title>
     <link rel="shortcut icon" href="lostAnimal/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="<%=request.getContextPath() %>/css/header.css">
-    <link rel="stylesheet" href="<%=request.getContextPath() %>/css/target.css">
     <link rel="stylesheet" href="<%=request.getContextPath()%>/css/updateLost.css">
 </head>
 <body>
-    <header>
-        <nav class="nav-bar">
-           	<ul class="login">
-        		<li><input type="button" value="로그인" onclick="location.href='login.do?command=logIn';" id="loginHide"></li>
-        		<li><input type="button" value="로그아웃" onclick="location.href='login.do?command=logOut';" id="loginShow"></li>
-        		<li><span id="loginUser">${user.myId}</span></li>
-        	</ul>
-            <ul class="menu">
-                <li>목격/보호</li>
-                <li>실종/신고</li>
-                <li>입양</li>
-                <li>봉사활동</li>
-                <li>커뮤니티</li>
-            </ul>
-            <div class="hide">
-                <div class="drop">
-                    <ul class="toggle catch">
-                        <li>목격</li>
-                        <li>보호</li>
-                        <li>보호소 위치</li>
-                    </ul>
-                    <ul class="toggle lost">
-                        <li><a href="<%=request.getContextPath() %>/lost.do?command=lostMain&page=1">실종신고</a></li>
-                        <li><a href="<%=request.getContextPath() %>/review.do?command=reviewLostMain&page=1">실종되었던 아이 찾은 후기</a></li>
-                    </ul>
-                    <ul class="toggle adopt">
-                        <li>입양절차</li>
-                        <li>입양후기</li>
-                        <li>무료입양</li>
-                        <li>입양사진</li>
-                    </ul>
-                    <ul class="toggle volunteer">
-                        <li>봉사신청</li>
-                        <li>일정</li>
-                    </ul>
-                    <ul class="toggle community">
-                        <li>공지사항</li>
-                        <li>불만접수</li>
-                        <li>Q&amp;A</li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <jsp:include page=".././header.jsp"/>
     <section>
     	<article class="updateMain">
     		<form action="<%=request.getContextPath()%>/lost.do?command=updateLostAnimalArticle&num=${toUpdate.num}" enctype="multipart/form-data" method="post">
+    			<div class="guide">
+    				<h2>등록한 신고글 수정하기</h2>
+    			</div>
     			<div class="img-container">
     				<c:choose>
     			  		<c:when test="${not empty toUpdate.lostPic}">
@@ -162,11 +120,11 @@
 					</tr>
 				</tfoot>
     			</table>
-    			
-    			<input type="submit" value="수정하기">
-    			<input type="button" value="다시 목록으로" onclick="location.href='<%=request.getContextPath()%>/lost.do?command=lostMain&page=1';">
-    			<input type="reset"  value="다시 작성하기">
-    			
+    			<div class="btn-bundle">
+    				<input type="submit" value="수정하기">
+    				<input type="button" value="다시 목록으로" onclick="location.href='<%=request.getContextPath()%>/lost.do?command=lostMain&page=1';">
+    				<input type="reset"  value="다시 작성하기">
+    			</div>
     		</form>
     		
     	</article>

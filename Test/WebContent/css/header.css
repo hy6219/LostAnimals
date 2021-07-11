@@ -4,6 +4,7 @@
 }
 body{
     font-size:16px;
+    width:100%;
 }
 h1{
     font-size:2rem;
@@ -12,108 +13,123 @@ header{
     position:sticky;
     top:0;
 }
-header nav.nav-bar ul.menu{
-    background-color: teal;
-    color:white;
-    font-size:20px;
-    font-weight:bold;
-    display:flex;
-    padding:2rem;
+
+header nav.nav-bar div.login{
+	display:flex;
+	justify-content:flex-start;
+	background-color:white;
 }
 
-header nav.nav-bar ul.menu li{
+header nav.nav-bar div.login div:first-child,
+header nav.nav-bar div.login div:nth-child(2),
+header nav.nav-bar div.login div:nth-child(3){
+	margin-left:3rem;
+	margin-right:3rem;
+	margin-top:.5rem;
+}
+header nav.nav-bar div.login div:first-child input{
+	padding:.5rem;
+	background-color:#19ce60;
+	border:none;
+	border-radius:10px;
+	color:white;
+	font-weight:bold;
+	font-size:1.1rem;
+}
+
+header nav.nav-bar div.login div:nth-child(2) input{
+	padding:.5rem;
+	background-color:dodgerblue;
+	border:none;
+	border-radius:10px;
+	color:white;
+	font-weight:bold;
+	font-size:1.1rem;
+}
+
+header nav.nav-bar div.login div:nth-child(3) span{
+	margin-left:1rem;
+	font-weight:bold;
+}
+
+header nav.nav-bar div.banner{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	background-color:white;
+}
+
+header nav.nav-bar div.banner img{
+	width:300px;
+}
+
+header nav.nav-bar div.menu{
+    background-color: white;
+    color:#999;
+    font-weight:bold;
+    display:flex;
+    justify-content:flex-start;
+    padding:2rem;
+    border-bottom:4px solid #19ce60;
+}
+
+header nav.nav-bar div.menu div{
     margin-left:12rem;
-    list-style: none;
+    font-size:1.1rem;
 }
-header nav.nav-bar ul.menu li:hover{
-    color:orange;
-}
+
 header nav.nav-bar div.hide{
     display:none;
 }
 header nav.nav-bar div.drop{
     display:flex;
+    justify-content:flex-start;
     align-content: center;
-    background-color: aliceblue;
-    border:2px solid;
-    border-radius:10px;
+    background-color: #19ce60;
+    color:white;
+    font-size:1.1rem;
+    font-weight:bold;
+    line-height:1.2;
+    padding-bottom:1rem;
+    border:0;
 }
-header nav.nav-bar div.drop ul.toggle{
-    margin-left:10rem;
+
+header nav.nav-bar div.drop div.toggle{
     line-height: 2;
 }
-header nav.nav-bar div.drop ul.toggle li{
-    list-style:none;
-    font-size:1rem;
+
+header nav.nav-bar div.drop div.toggle:first-child{
+	margin-left:13rem;
 }
 
-section article.main{
+header nav.nav-bar div.drop div.toggle:nth-child(2){
+	margin-left:8rem;
+}
+header nav.nav-bar div.drop div.toggle:nth-child(3){
+	margin-left:8rem;
+}
+header nav.nav-bar div.drop div.toggle:nth-child(4){
+	margin-left:11rem;
+}
+header nav.nav-bar div.drop div.toggle:nth-child(5){
+	margin-left:13rem;
+}
+
+header nav.nav-bar div.drop div.toggle div{
     display:flex;
-    justify-content: center;
-    align-content: center;
-    margin:3rem auto;
+    justify-content:center;
+    align-items:center;
+    font-size:1rem;
+    transition:0.3s;
+    cursor:pointer;
 }
-section article.main div.contents h1{
-	text-align:center;
-}
-section article.main iframe{
-    width: 60rem;
-    height:12rem;
-    margin-left:15%;
-    margin-top:20px;
-}
-
-section article.main div.contents .register{
-	display:flex;
-	justify-content:flex-end;
-}
-
-section article.main div.contents .register input[type=button]{
-	width : 10rem;
-	height: 2rem;
-	border-radius:1.5rem;
-	margin-right:.5rem;
-}
-
-section article.main div.contents .register input[type=button]:first-child{
-	background-color:orange;
-}
-
-section article.main div.contents .register input[type=button]:nth-child(2){
-	background-color:lightgreen;
-}
-
-section article.main div.contents-container{
-	display:flex;
-	justify-content:center;
-	align-content:center;
-	width:1200px;
-	margin:3rem auto;
-	flex-wrap:wrap;
+header nav.nav-bar div.drop div.toggle div:hover{
+	background-size:100% 100%;
+	background:linear-gradient(transparent 20%,#fff200 60%,transparent 20%);
 }
 
 
-section article.main div.contents-container div.item{
-	border:2px solid black;
-	border-radius:10px;
-	margin:2% 2%;
-	align-self:center;
-	width:320px;
-}
-section article.main div.contents-container div.item img{
-	width:200px;
-	height:200px;
-	margin-left:3rem;
-}
-
-section article.main div.contents div.pageBtn{
-	display:flex;
-	justify-content:center;
-	align-items:center;
-}
-
-section article.main div.contents div.pageBtn input[type=button]{
-	width:30px;
-	height:30px;
-	background-color:lightblue;
+header nav.nav-bar div.drop div.toggle div a{
+	text-decoration:none;
+	color:white;
 }

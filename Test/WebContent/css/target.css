@@ -1,24 +1,12 @@
 @charset "UTF-8";
-
 *{
 	padding:0;
 	margin:0;
 }
 
-body{
-	font-size:16px;
-	position:relative;
-}
-
-h1{
-	font-size:2rem;
-}
-
 section article.main div.article-container{
-	position:absolute;
-	top:20rem;
-	left:5%;
 	width:100%;
+	margin-top:10px;
 	display:flex;
 	flex-wrap:wrap;
 	justify-content:flex-start;
@@ -26,22 +14,20 @@ section article.main div.article-container{
 }
 
 section article.main img{
+	margin-left:10px;
 	width:500px;
 }
-
-
 
 section article.main div.article{
 	border:0;
 }
 
 section article.main div.article table{
-	border:transparent;
+	border:none;
 	border-collapse:collapse;
 	border-radius:20px;
 	width:800px;
 	margin-left:10%;
-	margin-right:10%;
 }
 
 
@@ -58,8 +44,8 @@ section article.main div.article table tr th{
 	border-top-style:0;
 	border-bottom-style:0;
 	border-left-style:0;
-	border-right:2px solid dodgerblue;
-	background:pink;
+	border-right:2px solid transparent;
+	background:#18dcff;
 	color:white;
 	text-shadow:0 0 10px black;
 	line-height:2;
@@ -70,10 +56,16 @@ section article.main div.article table tr td{
 	padding-left:10px;
 }
 
-
+section article.main div.article table tr td textarea{
+	width:500px;
+	margin-top:3px;
+	border-radius:5px;
+	padding:10px;
+}
 section article.main div.article-container div.reply-container div.reply-content{
 	width:1100px;
 	margin-top:5rem;
+	margin-left:10%;
 	display:flex;
 	flex-wrap:wrap;
 	justify-content:flex-start;
@@ -106,8 +98,11 @@ section article.main div.article-container div.reply-container div.reply-content
 
 
 section article.main div.article-container div.reply-container div.attach-apply-content{
+	margin-left:10%;
 	margin-top:1rem;
-	background-color:rgba(129, 236, 236,.5);
+	background-color:#22a6b3;
+	color:white;
+	font-weight:bold;
 	width:80rem;
 }
 
@@ -126,21 +121,20 @@ section article.main div.article-container div.reply-container div.attach-apply-
 	margin-right:.5rem;
 	padding-right:10px;
 	background-color:transparent;
-	color:dodgerblue;
+	color:white;
 	font-weight:bold;
-	text-shadow:0 0 10px white;
 	border-top:0;
 	border-bottom:0;
 	border-left:0;
-	border-right:2px solid dodgerblue;
+	border-right:2px solid white;
 }
 section article.main div.article-container div.mod-container{
-	position:absolute;
-	top:530px;	
+	margin-left:10%;
+	margin-top:10%;
 }
 
-section article.main div.article-container input[type=button].article-update,
-section article.main div.article-container input[type=button].article-delete{
+section article.main div.article-container input.article-update,
+section article.main div.article-container input.article-delete{
 	width:100px;
 	padding:5px;
 	color:white;
@@ -148,4 +142,5 @@ section article.main div.article-container input[type=button].article-delete{
 	background-color:dodgerblue;
 	border:2px solid transparent;
 	border-radius:10px;
+	margin-left:3px;
 }

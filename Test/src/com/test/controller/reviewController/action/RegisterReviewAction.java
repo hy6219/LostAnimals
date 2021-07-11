@@ -19,7 +19,7 @@ public class RegisterReviewAction implements Action{
 	public void execute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		LostDaoImpl lostDao = LostDaoImpl.getInstance();
-		int         num     = Integer.valueOf(request.getParameter("no"));
+		int         num     = Integer.valueOf(request.getParameter("num"));
 		LostDto     target  = lostDao.selectOne(num);//후기 대상 찾기 완료
 		String url ="";
 		HttpSession session = request.getSession();

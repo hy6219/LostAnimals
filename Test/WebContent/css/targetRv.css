@@ -1,0 +1,82 @@
+@charset "UTF-8";
+*{
+	padding:0;
+	margin:0;
+}
+
+section article.main div.article-container{
+	width:100%;
+	margin-top:10px;
+	display:flex;
+	flex-wrap:wrap;
+	justify-content:flex-start;
+	align-content:flex-start;
+}
+
+section article.main img{
+	margin-left:10px;
+	width:500px;
+}
+
+section article.main div.article{
+	border:0;
+}
+
+section article.main div.article table{
+	border:none;
+	border-collapse:collapse;
+	border-radius:20px;
+	width:800px;
+	margin-left:10%;
+}
+
+
+section article.main div.article table tr{
+	border-top-style:0;
+	border-bottom:2px solid dodgerblue;
+	border-left-style:0;
+	border-right-style:0;
+}
+section article.main div.article table tr:hover{
+	background:yellow;
+}
+section article.main div.article table tr th{
+	border-top-style:0;
+	border-bottom-style:0;
+	border-left-style:0;
+	border-right:2px solid transparent;
+	background:#18dcff;
+	color:white;
+	text-shadow:0 0 10px black;
+	line-height:2;
+}
+
+section article.main div.article table tr td{
+	line-height:2;
+	padding-left:10px;
+}
+
+section article.main div.article table tr td textarea{
+	width:500px;
+	margin-top:3px;
+	border-radius:5px;
+	padding:10px;
+}
+
+section article.main div.article-container div.mod-container{
+	position:absolute;
+	top:800px;
+	left:30px;
+}
+
+section article.main div.article-container input.article-update,
+section article.main div.article-container input.article-delete{
+	width:100px;
+	padding:5px;
+	color:white;
+	font-size:1rem;
+	background-color:dodgerblue;
+	border:2px solid transparent;
+	border-radius:10px;
+	margin-left:3px;
+}

@@ -1,5 +1,107 @@
 @charset "UTF-8";
 
+section article.updateMain div.guide{
+	background-color:#686de0;
+	padding:2rem;
+}
+
+section article.updateMain div.guide h2{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	color:white;
+}
+
+section article.updateMain div.img-container{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	margin-top:30px;
+}
+
+section article.updateMain div.img-container img{
+	width:500px;
+}
+
+section article.updateMain table{
+	width:900px;
+	margin-left:25%;
+	margin-top:10%;
+}
+
+table tbody tr th{
+	background-color:#19ce60;
+	color:white;
+	border:transparent;
+	padding:10px;
+}
+
+table tbody tr td input,
+table tbody tr td textarea,
+table tbody tr td select{
+	width:600px;
+	font-size:1.2rem;
+	padding:3px;
+}
+
+table tbody tr td select{
+	width:200px;
+	margin-bottom:10px;
+}
+
+table tbody tr td input[name=reserveAddr],
+table tbody tr td input[name=cate]{
+	width:400px;
+}
+
+table tfoot tr td{
+	border:none;
+}
+
+table tfoot tr td span{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	color:red;
+	font-weight:bold;
+	padding:10px;
+	transition:5s;
+}
+
+table tfoot tr td span:hover{
+	background-color:yellow;
+	border:2px solid red;
+	border-radius:20px;
+}
+
 input:read-only{
 	background-color:lightgray;
+}
+
+section article.updateMain div.btn-bundle{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+
+section article.updateMain div.btn-bundle input{
+	margin-right:1rem;
+	font-size:1.2rem;
+	font-weight:bold;
+	padding:1rem;
+	border-radius:10px;
+}
+
+section article.updateMain div.btn-bundle input[type=submit]{
+	background-color:red;
+	color:white;
+	margin-left:40px;
+}
+
+section article.updateMain div.btn-bundle input[type=reset]{
+	background-color:lightgreen;
+}
+
+section article.updateMain div.btn-bundle input[type=button]{
+	background-color:white;
 }

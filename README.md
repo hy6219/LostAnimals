@@ -15,3 +15,5 @@
 - 실종신고 및 후기 게시판에서 회원 혹은 권역별 탐색이 이루어진 경우 보여지는 페이지에 대한 페이징 및 조회
 
 3. 게시글 수정, 삭제 - 실종 신고 및 등록 게시판에 있는 게시글의 수정 및 삭제는 회원만 가능하도록 지원(접근 차단)
+[실종신고게시판 CRUD 모습 및 스타일링 진행 상황]
+![](https://github.com/hy6219/LostAnimals/blob/master/%EC%B0%BE%EC%95%84%EB%B4%90%EC%A3%BC%EA%B0%9C%EB%83%A5_%EC%A0%95%EC%A7%80%EC%88%98_%EC%8B%A4%EC%A2%85%EC%8B%A0%EA%B3%A0%EA%B2%8C%EC%8B%9C%ED%8C%90_%EC%99%84%EB%A3%8C%EB%AA%A8%EC%8A%B5.gif?raw=true)

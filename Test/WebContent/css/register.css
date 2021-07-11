@@ -1,0 +1,109 @@
+@charset "UTF-8";
+section article.main div.contents{
+	width:100%;
+	padding:1rem;
+	background-color:#7d5fff;
+}
+section article.main div.contents h1{
+	text-align:center;
+	margin-top:3rem;
+	margin-bottom:3rem;
+	color:white;
+}
+section article.main table{
+	width:50%;
+	margin:3rem auto;
+	border-style:none;
+	border-collapse:collapse;
+}
+section article.main table tbody tr th{
+	width:200px;
+	border-top:0;
+	border-bottom:3px solid transparent;
+	border-right:0;
+	border-left:0;
+	background-color:#19ce60;
+	color:white;
+}
+section article.main table tbody tr td{
+	padding:10px;
+	border-top:0;
+	border-bottom:3px solid transparent;
+	border-right:0;
+	border-left:0;
+}
+section article.main table tbody input{
+	width:35rem;
+	font-size:1.25rem;
+}
+section article.main table tbody select{
+	font-size:1.25rem;
+}
+section article.main table tbody select#province{
+	margin-bottom:1rem;
+}
+section article.main table tbody input#reserveAddr{
+	width:25rem;
+}
+section article.main table tbody tr:nth-child(7) textarea,
+section article.main table tbody tr:nth-child(9) textarea{
+	width:35rem;	
+}
+
+section article.main table tbody tr:nth-child(8) select{
+	margin-bottom:1rem;
+}
+section article.main table tbody tr:nth-child(8) td input[type=text]{
+	width:20rem;
+}
+section article.main table tbody p.cateExp{
+	color:red;
+	font-weight:bold;
+}
+
+section article.main table tfoot tr td{
+	border:none;
+}
+
+section article.main table tfoot tr td span{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+	color:red;
+	font-weight:bold;
+	padding:10px;
+	transition:5s;
+}
+
+section article.main table tfoot tr td span:hover{
+	background-color:yellow;
+	border:2px solid red;
+	border-radius:20px;
+}
+
+section article.main div.btnBundle{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+section article.main div.btnBundle input{
+	margin-right:1rem;
+	font-size:1.2rem;
+	font-weight:bold;
+	padding:1rem;
+	border-radius:10px;
+}
+
+section article.main div.btnBundle input[type=submit]{
+	background-color:red;
+	color:white;
+	
+}
+
+section article.main div.btnBundle input[type=reset]{
+	background-color:lightgreen;
+}
+
+section article.main div.btnBundle input[type=button]{
+	background-color:white;
+}

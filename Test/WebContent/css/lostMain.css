@@ -1,0 +1,80 @@
+@charset "UTF-8";
+section article.main{
+    display:flex;
+    justify-content: center;
+    align-content: center;
+    margin:3rem auto;
+}
+section article.main div.contents h1{
+	text-align:center;
+}
+section article.main iframe{
+    width: 60rem;
+    height:20rem;
+    margin-left:15%;
+    margin-top:20px;
+}
+
+section article.main div.contents .register{
+	display:flex;
+	justify-content:flex-end;
+}
+
+section article.main div.contents .register input[type=button]{
+	width : 10rem;
+	height: 2rem;
+	border-radius:1.5rem;
+	margin-right:.5rem;
+}
+
+section article.main div.contents .register input#prov-search,
+input#review-prov{
+	background-color:orange;
+}
+
+section article.main div.contents .register input#register-my-lost,
+input#my-lost-review{
+	background-color:lightgreen;
+}
+
+input#my-lost-article{
+	background-color:dodgerblue;
+	color:white;
+	font-weight:bold;
+}
+
+section article.main div.contents-container{
+	display:flex;
+	justify-content:center;
+	align-content:center;
+	width:1200px;
+	margin:3rem auto;
+	flex-wrap:wrap;
+}
+
+
+section article.main div.contents-container div.item{
+	border:2px solid black;
+	border-radius:10px;
+	margin:2% 2%;
+	align-self:center;
+	width:320px;
+	height:330px;
+}
+section article.main div.contents-container div.item img{
+	width:200px;
+	height:200px;
+	margin-left:3rem;
+}
+
+section article.main div.contents div.pageBtn{
+	display:flex;
+	justify-content:center;
+	align-items:center;
+}
+
+section article.main div.contents div.pageBtn input[type=button]{
+	width:30px;
+	height:30px;
+	background-color:lightblue;
+}

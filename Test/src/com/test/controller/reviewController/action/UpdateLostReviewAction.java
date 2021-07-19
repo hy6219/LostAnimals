@@ -73,7 +73,7 @@ public class UpdateLostReviewAction implements Action{
 			target.setSpecies(species);
 			target.setCate(cate);
 			target.setContent(content);
-			target.setContent(regDate);
+			target.setRegDate(regDate);
 			
 			result = dao.updateLostReview(target);
 			
